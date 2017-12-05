@@ -31,10 +31,10 @@ class AddCustomerDialog extends React.Component {
 		this.setState({open: false})
 	}
 	handleRequestClose() {
-    this.setState({
-      snackbarOpen: false,
-    });
-  }
+		this.setState({
+		snackbarOpen: false,
+		});
+	}
 	handleChange(event){
 		const name = event.target.name;
 		const value = event.target.value;
@@ -50,6 +50,7 @@ class AddCustomerDialog extends React.Component {
 	    .set('Content-Type', 'application/json')
 	    .send(this.state.customer)
 	    .end((err, response) => {
+			console.log(response)
 	    	if(err){
 	    		this.setState({snackbarOpen: true, snackbarMessage: 'Failed to add customer!'});		    
 	    	}

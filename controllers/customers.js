@@ -2,13 +2,13 @@ var connection = require('../database.js')
 
 module.exports = {
   addItem: function(req, res){
-    var query = 'INSERT INTO tblcustomer ?';
+    var query = 'INSERT INTO tblcustomer SET ?';
+    console.log(req.body)
     connection.query(query, req.body, function(error, results, fields){
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })
-      };
-      res.send({ "status": 200, "error": null, "response": results });
-
+      }
+      res.send({ "status": 200, "error": null, "response": null });
     })
   },
   find: function(req, res){
@@ -33,7 +33,7 @@ module.exports = {
   deleteById(req, res){
     var id = req.params.id;
     var query = 'DELETE FROM tblcustomer WHERE idcustomer = ?';
-    connection.query(query, function(error, results, fields) {
+    connection.query(query, id, function(error, results, fields) {
       if(error){
         res.send({ "status": 500, "error": error, "response": null })        
       }

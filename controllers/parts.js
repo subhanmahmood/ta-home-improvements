@@ -2,13 +2,12 @@ var connection = require('../database.js')
 
 module.exports = {
   addItem: function(req, res){
-    var query = 'INSERT INTO tblcustomer ?';
+    var query = 'INSERT INTO tblpart SET ?';
     connection.query(query, req.body, function(error, results, fields){
-      if ( error ) {
+      if (error) {
         res.send({ "status": 500, "error": error, "response": null })
-      };
+      }
       res.send({ "status": 200, "error": null, "response": results });
-
     })
   },
   find: function(req, res){

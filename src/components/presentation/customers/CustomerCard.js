@@ -9,16 +9,21 @@ class CustomerCard extends React.Component {
 		super(props)
 		this.deleteCustomer = this.deleteCustomer.bind(this);
 	}
-	deleteCustomer(){
+	deleteCustomer(id){
 		const routeQuery = '/api/customer/' + this.props.customer.idcustomer;
-		superagent.del(routeQuery)
+		
+		superagent.delete(routeQuery)
 		.end((err, res) => {
 			if(err){
 				alert('ERROR: ' + err);
-			} 
-			console.log(res);
+			}
+			console.log(res)
+			if(res.statusCode == 200){
+				console.log("success");
+				console.log(id);
+				this.props.delete(id);
+			}
 		});
-
 	}
 	render(){
 		const customer = this.props.customer;	
@@ -50,7 +55,7 @@ class CustomerCard extends React.Component {
 				</CardText>
 				<CardActions>
 				<FlatButton href="/edit/customer" label="Edit" style={styles.action}/>
-				<FlatButton style={styles.deleteButton} onClick={this.deleteCustomer} label="Delete"/>
+				<FlatButton style={styles.deleteButton} onClick={() => this.deleteCustomer(this.props.customer.idcustomer)} label="Delete"/>
 				</CardActions>
 			</Card>
 

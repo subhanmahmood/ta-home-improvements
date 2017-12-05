@@ -32,6 +32,7 @@ class CustomersList extends React.Component {
 			list: [],
 			customersExist: false
 		}
+		this.deleteItem = this.deleteItem.bind(this);
 	}
 	addCustomer(customer){
 		let updatedList = Object.assign([], this.state.list);
@@ -50,20 +51,21 @@ class CustomersList extends React.Component {
 			}
 		})
 	}
-	deleteItem(){
-		const id = 33;
-		const list = this.state.list;
-		for(let i = 0; i < list.length; i++){
-			let customer = list[i]
-			if(customer.id === id){
-				list[i] = null;
+	deleteItem(id){
+		const oldList = Object.assign([], this.state.list);
+		const newList = Object.assign([], []);
+		for(let i = 0; i < oldList.length; i++){
+			const currentItem = oldList[i];
+			if(currentItem.idcustomer !== id){
+				console.log({id, currentItem})
+				newList.push(currentItem)
 			}
 		}
-		this.setState({list:list})
+		this.setState({list: newList});
 	}
 	render(){
 		const custItems = this.state.list.map((customer, i) => {
-			return(<div className="col s12 m6" key={i}><CustomerCard customer={customer} /></div>)
+			return(<div className="col s12 m6" key={i}><CustomerCard customer={customer} delete={this.deleteItem}/></div>)
 		});
 
 		var content;

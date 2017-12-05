@@ -46782,6 +46782,7 @@ var CustomersList = function (_React$Component2) {
 			list: [],
 			customersExist: false
 		};
+		_this2.deleteItem = _this2.deleteItem.bind(_this2);
 		return _this2;
 	}
 
@@ -46809,25 +46810,28 @@ var CustomersList = function (_React$Component2) {
 		}
 	}, {
 		key: 'deleteItem',
-		value: function deleteItem() {
-			var id = 33;
-			var list = this.state.list;
-			for (var i = 0; i < list.length; i++) {
-				var customer = list[i];
-				if (customer.id === id) {
-					list[i] = null;
+		value: function deleteItem(id) {
+			var oldList = Object.assign([], this.state.list);
+			var newList = Object.assign([], []);
+			for (var i = 0; i < oldList.length; i++) {
+				var currentItem = oldList[i];
+				if (currentItem.idcustomer !== id) {
+					console.log({ id: id, currentItem: currentItem });
+					newList.push(currentItem);
 				}
 			}
-			this.setState({ list: list });
+			this.setState({ list: newList });
 		}
 	}, {
 		key: 'render',
 		value: function render() {
+			var _this4 = this;
+
 			var custItems = this.state.list.map(function (customer, i) {
 				return _react2.default.createElement(
 					'div',
 					{ className: 'col s12 m6', key: i },
-					_react2.default.createElement(_CustomerCard2.default, { customer: customer })
+					_react2.default.createElement(_CustomerCard2.default, { customer: customer, 'delete': _this4.deleteItem })
 				);
 			});
 
@@ -46903,18 +46907,28 @@ var CustomerCard = function (_React$Component) {
 
 	_createClass(CustomerCard, [{
 		key: 'deleteCustomer',
-		value: function deleteCustomer() {
+		value: function deleteCustomer(id) {
+			var _this2 = this;
+
 			var routeQuery = '/api/customer/' + this.props.customer.idcustomer;
-			_superagent2.default.del(routeQuery).end(function (err, res) {
+
+			_superagent2.default.delete(routeQuery).end(function (err, res) {
 				if (err) {
 					alert('ERROR: ' + err);
 				}
 				console.log(res);
+				if (res.statusCode == 200) {
+					console.log("success");
+					console.log(id);
+					_this2.props.delete(id);
+				}
 			});
 		}
 	}, {
 		key: 'render',
 		value: function render() {
+			var _this3 = this;
+
 			var customer = this.props.customer;
 			var styles = {
 				card: {
@@ -46952,7 +46966,9 @@ var CustomerCard = function (_React$Component) {
 					_Card.CardActions,
 					null,
 					_react2.default.createElement(_FlatButton2.default, { href: '/edit/customer', label: 'Edit', style: styles.action }),
-					_react2.default.createElement(_FlatButton2.default, { style: styles.deleteButton, onClick: this.deleteCustomer, label: 'Delete' })
+					_react2.default.createElement(_FlatButton2.default, { style: styles.deleteButton, onClick: function onClick() {
+							return _this3.deleteCustomer(_this3.props.customer.idcustomer);
+						}, label: 'Delete' })
 				)
 			);
 		}
@@ -47079,6 +47095,7 @@ var AddCustomerDialog = function (_React$Component) {
 
 			var data = this.state.customer;
 			_superagent2.default.post('/api/customer').set('Content-Type', 'application/json').send(this.state.customer).end(function (err, response) {
+				console.log(response);
 				if (err) {
 					_this2.setState({ snackbarOpen: true, snackbarMessage: 'Failed to add customer!' });
 				}
