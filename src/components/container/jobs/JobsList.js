@@ -65,7 +65,6 @@ class JobsList extends React.Component {
 		}
 	}
 	handleChange(event, value){
-		console.log(event);
 	    this.setState({
 	      value: value,
 	    });

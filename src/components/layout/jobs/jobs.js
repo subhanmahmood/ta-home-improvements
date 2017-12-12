@@ -11,7 +11,7 @@ class Jobs extends React.Component {
 				<div className="row">
 					<div className="col s12">
 						<h2>Jobs</h2>
-						<JobsList columns={1}/>
+						<JobsList columns={2}/>
 						<AddJobDialog/>
 					</div>
 				</div>

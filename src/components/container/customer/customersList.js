@@ -65,7 +65,13 @@ class CustomersList extends React.Component {
 	}
 	render(){
 		const custItems = this.state.list.map((customer, i) => {
-			return(<div className="col s12 m6" key={i}><CustomerCard customer={customer} delete={this.deleteItem}/></div>)
+			return(
+				<div className="col s12 m6" key={i}>
+					<CustomerCard 
+						customer={customer} 
+						delete={this.deleteItem}
+						editable={true} />
+				</div>)
 		});
 
 		var content;
@@ -83,6 +89,6 @@ class CustomersList extends React.Component {
 		);
 	}
 
-}
+} 
 
 export default CustomersList;

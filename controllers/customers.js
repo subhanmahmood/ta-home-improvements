@@ -43,8 +43,8 @@ module.exports = {
   findAndUpdateById: function(req, res){
     var id = req.params.id;
     var body = req.body;
-    var query = 'UPDATE tblcustomer SET ? WHERE idcustomer = 33';
-    connection.query(query, req.body, function(error, results, fields) {
+    var query = 'UPDATE tblcustomer SET ? WHERE idcustomer = ?';
+    connection.query(query, [body, id], function(error, results, fields) {
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })
       };

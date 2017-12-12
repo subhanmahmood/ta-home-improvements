@@ -15,7 +15,7 @@ router.get('/customers', function(req, res, next) {
 });
 
 router.get('/edit/customer/:id', function(req, res, next) {
-	res.render('index', {title: 'Edit Customer', source: 'editCustomer', id: req.params.id})
+	res.render('update', {title: 'Edit Customer', source: 'editCustomer', id: req.params.id})
 })
 
 router.get('/jobs', function(req, res, next) {

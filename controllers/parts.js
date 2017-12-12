@@ -32,8 +32,9 @@ module.exports = {
   },
   deleteById(req, res){
     var id = req.params.id;
+    console.log(id)
     var query = 'DELETE FROM tblpart WHERE idpart = ?';
-    connection.query(query, function(error, results, fields) {
+    connection.query(query, id, function(error, results, fields) {
       if(error){
         res.send({ "status": 500, "error": error, "response": null })        
       }
@@ -43,8 +44,8 @@ module.exports = {
   findAndUpdateById: function(req, res){
     var id = req.params.id;
     var body = req.body;
-    var query = 'UPDATE tblpart SET ? WHERE idpart = 33';
-    connection.query(query, req.body, function(error, results, fields) {
+    var query = 'UPDATE tblpart SET ? WHERE idpart = ?';
+    connection.query(query, [body, id], function(error, results, fields) {
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })
       };

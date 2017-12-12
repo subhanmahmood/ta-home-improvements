@@ -10,6 +10,7 @@ import {
 } from 'material-ui/Table';
 import RaisedButton from 'material-ui/RaisedButton';
 import {lightGreenA400} from 'material-ui/styles/colors';
+import {red500} from 'material-ui/styles/colors';
 import superagent from 'superagent';
 
 import PartsTableRow from '../../presentation/parts/PartsTableRow';
@@ -30,6 +31,7 @@ class PartsTable extends React.Component{
 		}
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.toggleAddPart = this.toggleAddPart.bind(this);
+		this.deleteItem = this.deleteItem.bind(this);
 	}
 	componentDidMount(){
 		superagent.get('/api/part')
@@ -56,6 +58,18 @@ class PartsTable extends React.Component{
 		let updatedPart = Object.assign({}, this.state.part);
 		updatedPart[event.target.name] = event.target.value;
 		this.setState({part: updatedPart});
+	}
+	deleteItem(id){
+		const oldList = Object.assign([], this.state.list);
+		const newList = Object.assign([], []);
+		for(let i = 0; i < oldList.length; i++){
+			const currentItem = oldList[i];
+			if(currentItem.idpart !== id){
+				console.log({id, currentItem})
+				newList.push(currentItem)
+			}
+		}
+		this.setState({list: newList});
 	}
 	handleSubmit(){			
 		this.toggleAddPart();
@@ -86,11 +100,27 @@ class PartsTable extends React.Component{
 		const addPart = !this.state.addPart;
 		this.setState({addPart: addPart});
 	}
-	render(){
-		
+	render(){		
 		const rows = this.state.list.map((part, i) => {
-			return(<PartsTableRow key={i} part={part} />)
+			return(<PartsTableRow key={i} part={part} delete={this.deleteItem} />)
 		})
+
+		const styles = {
+			buttons: {
+				marginTop: 10
+			}
+		}
+
+		let cancelStyle = {}
+		let buttonClass = ''
+		if(!this.state.addPart){
+			cancelStyle = {display: 'none'}
+			buttonClass = 'col m12'
+		} else {
+			cancelStyle = {width:'100%', margin: 2}
+			buttonClass = 'col m6'
+		}
+
 		return(
 			<div>
 				<Table>
@@ -102,6 +132,7 @@ class PartsTable extends React.Component{
 							<TableHeaderColumn>Name</TableHeaderColumn>
 							<TableHeaderColumn>Description</TableHeaderColumn>
 							<TableHeaderColumn>Cost per unit</TableHeaderColumn>
+							<TableHeaderColumn>Delete</TableHeaderColumn>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -112,13 +143,27 @@ class PartsTable extends React.Component{
 							update={this.handleChange.bind(this)}/>
 					</TableBody>
 				</Table>
-				<RaisedButton 
-					label={this.state.addPart ? 'Submit' : 'Add part'} 
-					primary={!this.state.addPart} 
-					style={{width:'100%', margin: 2}} 
-					backgroundColor={this.state.addPart ? lightGreenA400 : ''}
-					labelColor={this.state.addPart ? '#fff' : ''}
-					onClick={this.state.addPart ? this.handleSubmit : this.toggleAddPart}/>
+				<div style={styles.buttons}>
+					<div className={buttonClass}>
+					<RaisedButton 				
+						label={this.state.addPart ? 'Submit' : 'Add part'} 
+						primary={!this.state.addPart} 
+						style={{width: '100%', margin: 2}} 
+						backgroundColor={this.state.addPart ? lightGreenA400 : ''}
+						labelColor={this.state.addPart ? '#fff' : ''}
+						onClick={this.state.addPart ? this.handleSubmit : this.toggleAddPart}
+					/>
+					</div>
+					<div className="col m6">
+						<RaisedButton 
+							label="cancel"
+							backgroundColor={red500}
+							style={cancelStyle}
+							labelColor='#fff'
+							onClick={this.toggleAddPart}
+						/>
+					</div>
+				</div>
 			</div>
 			)
 	}

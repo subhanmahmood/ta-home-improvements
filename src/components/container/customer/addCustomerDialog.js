@@ -16,7 +16,17 @@ class AddCustomerDialog extends React.Component {
 			open: false,
 			snackbarOpen: false,
 			snackbarMessage: '',
-			customer: {}
+			customer: {},
+			errors: {
+				first_name: false,
+				last_name: false,
+				address_line_1: false,
+				address_line_2: false,
+				address_line_3: false,
+				postcode: false,
+				phone_number: false,
+				email: false
+			}
 		}
 		this.handleChange = this.handleChange.bind(this);
 	}
@@ -38,13 +48,22 @@ class AddCustomerDialog extends React.Component {
 	handleChange(event){
 		const name = event.target.name;
 		const value = event.target.value;
+		
+		if(value === ''){
+			let updatedErrors = Object.assign({}, this.state.errors);
+			updatedErrors[name] = true
+			this.setState({errors: updatedErrors})
+		}else{
+			let updatedErrors = Object.assign({}, this.state.errors);
+			updatedErrors[name] = false
+			this.setState({errors: updatedErrors})
+		}
 		let updatedCustomer = Object.assign({}, this.state.customer);
 		updatedCustomer[name] = value;
 		this.setState({customer: updatedCustomer});
 	}
 	handleSubmit(event){
 		event.preventDefault();
-
 		var data = this.state.customer;
 		superagent.post('/api/customer')
 	    .set('Content-Type', 'application/json')
@@ -61,6 +80,7 @@ class AddCustomerDialog extends React.Component {
 	    })
 	}
 	render(){
+		const errors = this.state.errors;
 		const actions = [
 			<FlatButton 
 				key={1}
@@ -74,10 +94,10 @@ class AddCustomerDialog extends React.Component {
 				primary={true}
 				onClick={this.handleClose.bind(this)} />
 		]
-		const customStyle = {
-			maxWidth: 'none'
-		}
 		const styles = {
+			dialog : {
+				maxWidth: 'none'
+			},
 			input: {
 				width: '100%'
 			},
@@ -85,6 +105,13 @@ class AddCustomerDialog extends React.Component {
 				position: 'absolute',
 				right: 24,
 				bottom: 24
+			},
+			actions: {
+				container: { 
+					textAlign: 'right', 
+					padding: 8, 
+					margin: '24px -24px -24px -24px' 
+				}
 			}
 		}
 		return(
@@ -100,18 +127,53 @@ class AddCustomerDialog extends React.Component {
 		          title="Add Customer"
 		          modal={true}
 		          open={this.state.open}
-		          contentStyle={customStyle}
+		          contentStyle={styles.dialog}
 		          onRequestClose={this.handleClose.bind(this)}
 		        >
 					<form onSubmit={this.handleSubmit.bind(this)}>
-						<TextField onChange={this.handleChange} style={styles.input} hintText="First name" name="first_name"/>
-						<TextField onChange={this.handleChange} style={styles.input} hintText="Last name" name="last_name"/>
-						<TextField onChange={this.handleChange} style={styles.input} hintText="Address Line 1" name="address_line_1"/>
-						<TextField onChange={this.handleChange} style={styles.input} hintText="Address Line 2" name="address_line_2"/>
-						<TextField onChange={this.handleChange} style={styles.input} hintText="Address Line 3" name="address_line_3"/>
-						<TextField onChange={this.handleChange} style={styles.input} hintText="Postcode" name="postcode"/>
-						<TextField onChange={this.handleChange} style={styles.input} hintText="Phone number" name="phone_number"/>
-						<TextField onChange={this.handleChange} style={styles.input} hintText="Email" name="email"/>
+						<TextField 
+							onChange={this.handleChange} 
+							style={styles.input} 
+							errorText={errors.first_name ? 'This field is required' : ''} 
+							hintText="First name" 
+							name="first_name"/>
+						<TextField 
+							onChange={this.handleChange} 
+							style={styles.input} 
+							errorText={errors.last_name ? 'This field is required' : ''} 
+							hintText="Last name" 
+							name="last_name"/>
+						<TextField 
+							onChange={this.handleChange} 
+							style={styles.input} 
+							errorText={errors.address_line_1 ? 'This field is required' : ''} 
+							hintText="Address Line 1" 
+							name="address_line_1"/>
+						<TextField 
+							onChange={this.handleChange} 
+							style={styles.input} 
+							hintText="Address Line 2" 
+							name="address_line_2"/>
+						<TextField 
+							onChange={this.handleChange} 
+							style={styles.input} 
+							hintText="Address Line 3" 
+							name="address_line_3"/>
+						<TextField 
+							onChange={this.handleChange} 
+							style={styles.input} 
+							errorText={errors.postcode ? 'This field is required' : ''} 
+							hintText="Postcode" name="postcode"/>
+						<TextField 
+							onChange={this.handleChange} 
+							style={styles.input} 
+							errorText={errors.phone_number ? 'This field is required' : ''} 
+							hintText="Phone number" name="phone_number"/>
+						<TextField 
+							onChange={this.handleChange} 
+							style={styles.input} 
+							errorText={errors.email ? 'This field is required' : ''} 
+							hintText="Email" name="email"/>
 						<div style={{ textAlign: 'right', padding: 8, margin: '24px -24px -24px -24px' }}>
 							{actions}
 						</div>

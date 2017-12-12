@@ -6,27 +6,27 @@ import superagent from 'superagent';
 
 class CustomerCard extends React.Component {
 	constructor(props){
-		super(props)
+		super(props);
+		this.state = {
+			customer: new Array
+		}
 		this.deleteCustomer = this.deleteCustomer.bind(this);
 	}
 	deleteCustomer(id){
 		const routeQuery = '/api/customer/' + this.props.customer.idcustomer;
-		
 		superagent.delete(routeQuery)
 		.end((err, res) => {
 			if(err){
 				alert('ERROR: ' + err);
 			}
-			console.log(res)
 			if(res.statusCode == 200){
-				console.log("success");
-				console.log(id);
 				this.props.delete(id);
 			}
 		});
 	}
 	render(){
 		const customer = this.props.customer;	
+		const editRoute = '/edit/customer/' + customer.idcustomer;
 		const styles = {
 			card: {
 				marginBottom: 20
@@ -42,6 +42,10 @@ class CustomerCard extends React.Component {
 				paddingBottom: 0
 			}
 		}
+		const actions = [
+			<FlatButton key={1} href={editRoute} label="Edit" style={styles.action}/>,
+			<FlatButton key={2} style={styles.deleteButton} onClick={() => this.deleteCustomer(this.props.customer.idcustomer)} label="Delete"/>
+		]
 		return(
 			<Card style={styles.card}>
 				<CardTitle 
@@ -54,8 +58,7 @@ class CustomerCard extends React.Component {
 					{customer.email}
 				</CardText>
 				<CardActions>
-				<FlatButton href="/edit/customer" label="Edit" style={styles.action}/>
-				<FlatButton style={styles.deleteButton} onClick={() => this.deleteCustomer(this.props.customer.idcustomer)} label="Delete"/>
+					{this.props.editable ? actions : ''}
 				</CardActions>
 			</Card>
 
