@@ -2,7 +2,7 @@ import React from 'react';
 import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card';
 
 import JobsList from '../../container/jobs/JobsList';
-import AddJobDialog from '../../container/jobs/AddJobDialog';
+import AddJobDialog from '../../container/jobs/AddJobDialog/AddJobDialog';
 
 class Jobs extends React.Component {
 	render(){

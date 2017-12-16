@@ -17,7 +17,7 @@ class EditCustomer extends React.Component {
 		}
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
-	componentWillMount(){
+	componentDidMount(){
 		const id = document.getElementById("id").innerHTML;
 		const routeQuery = '/api/customer/' + id;
 		superagent.get(routeQuery)
@@ -40,8 +40,7 @@ class EditCustomer extends React.Component {
 		event.preventDefault();
 
 		const customer = this.state.customer;
-		const queryRoute = '/api/customer/' + this.state.customer.idcustomer;
-		superagent.put(queryRoute)
+		superagent.put(`/api/customer/${this.state.customer.idcustomer}`)
 		.set('Content-Type', 'application/json')
 		.send(customer)
 		.end((err, res) => {

@@ -74,14 +74,13 @@ class JobsList extends React.Component {
 		this.setState({value: initialColumnSize});
 	}
 	render(){
-		
-
 		const columnSize = 12 / this.state.value;
 		const columnClass = "card col s12 m" + columnSize;
 
 		const JobCards = this.state.list.map((job, i) => {
 			return (<div className={columnClass} key={i} ><JobCard job={job} /></div>)
-		})
+		});
+		
 		return(
 			<div>
 				<Toolbar style={{backgroundColor: '#fff'}}>
@@ -103,8 +102,7 @@ class JobsList extends React.Component {
 						</IconMenu>
 					</ToolbarGroup>
 				</Toolbar>
-				{JobCards}
-				
+				{JobCards}				
 			</div>
 		)
 	}
