@@ -30,6 +30,7 @@ class PartsTableRow extends React.Component {
 		this.props.delete(this.props.part.idpart);
 	}
 	render(){
+		console.log(this.props.part)
 		return(
 			<TableRow>
 				<TableRowColumn>{this.props.part.idpart}</TableRowColumn>

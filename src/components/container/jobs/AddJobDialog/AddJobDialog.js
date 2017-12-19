@@ -16,8 +16,6 @@ import PartSelect from './Select/PartSelect';
 
 import styles from './styles';
 
-
-
 class AddJobDialog extends React.Component {
 	constructor(props){
 		super(props);
@@ -37,12 +35,15 @@ class AddJobDialog extends React.Component {
 				paid: false
 			},
 			jobParts: [],
-			parts: new Array([])
+			parts: new Array([]),
+			currentJobId: 0
 		}
 		this.addJobPart = this.addJobPart.bind(this);
 		this.handleCustomerSelectChange = this.handleCustomerSelectChange.bind(this);
 		this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
 		this.handleJobTypeSelectChange = this.handleJobTypeSelectChange.bind(this);
+		this.deleteJobPart = this.deleteJobPart.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 	componentDidMount(){
 		superagent.get('/api/customer')
@@ -51,7 +52,7 @@ class AddJobDialog extends React.Component {
                 alert('ERROR: ' + err);
             }
             const customers = res.body.response;
-            this.setState({customers: customers})
+			this.setState({customers: customers})
 		});
 		
 		superagent.get('/api/part')
@@ -108,12 +109,69 @@ class AddJobDialog extends React.Component {
 		updatedJobParts.push(jobPart);
 		this.setState({jobParts: updatedJobParts, expenses: totalCost});
 	}	
+	deleteJobPart(jobPart){
+		let part = new Array({});
+		for(let i = 0; i < this.state.parts.length; i++){
+			if(this.state.parts[i].idpart === jobPart.idpart){
+				part = this.state.parts[i];
+			}
+		}		
+		const cost = part.cost_per_unit * jobPart.quantity;
+		const totalCost = this.state.expenses - cost;
+		const oldJobParts = Object.assign([], this.state.jobParts);
+		const newJobParts = Object.assign([], []);
+		oldJobParts.forEach((jp) => {			
+			console.log(jp)
+			console.log(jobPart.idpart)
+			if(jp.idpart !== jobPart.idpart){
+				newJobParts.push(jobPart);				
+			}
+		})
+		this.setState({expenses: cost, jobParts: newJobParts})
+	}
+	handleSubmit(){
+		superagent.post('/api/job/')
+		.set('Content-Type', 'application/json')
+		.send(this.state.job)
+		.end((err, res) => {
+			if(err){
+				alert('ERROR: ' + err)
+			} else if(res.body.status === 200){
+				console.log("Successfully posted")
+				
+				superagent.get('/api/job')
+				.end((err, res) => {
+					if(err){
+						console.log(err)
+					}
+					const jobs = res.body.response
+					const currentId = jobs[jobs.length - 1].idjob;
+					this.setState({currentJobId: currentId});
+					this.state.jobParts.forEach((jobPart) => {
+						jobPart.idjob = currentId
+
+						superagent.post('/api/jobpart')
+						.set('Content-Type', 'application/json')					
+						.send(jobPart)
+						.end((err, res) => {
+							if(err){
+								console.log(err)
+							}
+							console.log("Status jobpart post: " + res.body.status)
+						})
+					})
+				})
+			}
+			
+		})
+	}
 	render(){
 		const actions = [
 			<FlatButton 
 				key={1}
 				label="Submit"
 				type="submit"
+				onClick={this.handleSubmit}
 				primary={true} />,
 			<FlatButton 
 				key={2}
@@ -136,16 +194,13 @@ class AddJobDialog extends React.Component {
 				>					
 					<div className="row">
 						<div className="col s12 m4">
-							Estimated Cost: £{this.state.expenses}.00
+							Estimated Cost: £{(this.state.expenses).toFixed(2)}
 						</div>
 						<div className="col s12 m4">
-							Estimated Profit: £{this.state.expenses * 1.5 - this.state.expenses}.00
+							Estimated Profit: £{(this.state.expenses * 1.5 - this.state.expenses).toFixed(2)}
 						</div>
 						<div className="col s12 m4">
-						Estimated Quote Price: £{this.state.expenses * 1.5}.00
-					</div>
-						<div className="col s12">
-							{JSON.stringify(this.state.job)}
+							Estimated Quote Price: £{(this.state.expenses * 1.5).toFixed(2)}
 						</div>
 					</div>
 					<div className="row">
@@ -177,7 +232,7 @@ class AddJobDialog extends React.Component {
 					</div>
 					<div className="row">
 						<div className="col s12">
-							<JobPartTable jobParts={this.state.jobParts}/>
+							<JobPartTable jobParts={this.state.jobParts} delete={this.deleteJobPart}/>
 						</div>
 					</div>						
 					<div className="row">

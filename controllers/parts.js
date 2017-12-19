@@ -2,6 +2,7 @@ var connection = require('../database.js')
 
 module.exports = {
   addItem: function(req, res){
+    console.log(req.body);
     var query = 'INSERT INTO tblpart SET ?';
     connection.query(query, req.body, function(error, results, fields){
       if (error) {
@@ -32,7 +33,6 @@ module.exports = {
   },
   deleteById(req, res){
     var id = req.params.id;
-    console.log(id)
     var query = 'DELETE FROM tblpart WHERE idpart = ?';
     connection.query(query, id, function(error, results, fields) {
       if(error){

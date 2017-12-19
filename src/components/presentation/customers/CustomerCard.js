@@ -8,7 +8,7 @@ class CustomerCard extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			customer: new Array
+			customer: new Array({})
 		}
 		this.deleteCustomer = this.deleteCustomer.bind(this);
 	}
@@ -25,6 +25,7 @@ class CustomerCard extends React.Component {
 	}
 	render(){
 		const customer = this.props.customer;	
+		console.log(customer)
 		const editRoute = '/edit/customer/' + customer.idcustomer;
 		const styles = {
 			card: {

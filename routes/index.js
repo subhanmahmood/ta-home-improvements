@@ -15,11 +15,16 @@ router.get('/customers', function(req, res, next) {
 });
 
 router.get('/edit/customer/:id', function(req, res, next) {
-	res.render('update', {title: 'Edit Customer', source: 'editCustomer', id: req.params.id})
+	res.render('singleItem', {title: 'Edit Customer', source: 'editCustomer', id: req.params.id})
 })
 
 router.get('/jobs', function(req, res, next) {
 	res.render('index', {title: 'Jobs', source: 'jobs'})
+})
+
+router.get('/jobs/:id', function(req, res, next){
+	var id = req.params.id
+	res.render('singleItem', {title: 'Job', source: 'job', id: id})
 })
 
 router.get('/parts', function(req, res, next) {

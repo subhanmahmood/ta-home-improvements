@@ -3,7 +3,7 @@ var connection = require('../database.js')
 module.exports = {
   addItem: function(req, res){
     console.log(req.body);
-    var query = 'INSERT INTO tbljob SET ?';
+    var query = 'INSERT INTO tbljobitem SET ?';
     connection.query(query, req.body, function(error, results, fields){
       if (error) {
         res.send({ "status": 500, "error": error, "response": null })
@@ -12,7 +12,7 @@ module.exports = {
     })
   },
   find: function(req, res){
-    var query = 'SELECT * FROM tbljob';
+    var query = 'SELECT * FROM tbljobitem';
     connection.query(query, function(error, results, fields){
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })
@@ -22,7 +22,7 @@ module.exports = {
   },
   findById: function(req, res){
     var id = parseInt(req.params.id);
-    var query = 'SELECT *  FROM tbljob WHERE idjob = ?';
+    var query = 'SELECT *  FROM tbljobitem WHERE idjob = ?';
     connection.query(query, id, function(error, results, fields){
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })
@@ -33,7 +33,7 @@ module.exports = {
   },
   deleteById(req, res){
     var id = req.params.id;
-    var query = 'DELETE FROM tbljob WHERE idjob = ?';
+    var query = 'DELETE FROM tbljobitem WHERE idjob = ?';
     connection.query(query, id, function(error, results, fields) {
       if(error){
         res.send({ "status": 500, "error": error, "response": null })        
@@ -44,7 +44,7 @@ module.exports = {
   findAndUpdateById: function(req, res){
     var id = req.params.id;
     var body = req.body;
-    var query = 'UPDATE tbljob SET ? WHERE idjob = ?';
+    var query = 'UPDATE tbljobitem SET ? WHERE idjob = ?';
     connection.query(query, [body, id], function(error, results, fields) {
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })
@@ -53,7 +53,7 @@ module.exports = {
     });
   },
   deleteAll: function(req, res){
-    var query = 'DELETE FROM tbljob';
+    var query = 'DELETE FROM tbljobitem';
     connection.query(query, function(error, results, fields){
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })

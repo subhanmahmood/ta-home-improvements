@@ -62,6 +62,8 @@ class AddPartRow extends React.Component {
 						onChange={this.props.update}
 						value={this.props.part.cost_per_unit}/>
 				</TableRowColumn>
+				<TableRowColumn>
+				</TableRowColumn>
 			</TableRow>
 		)
 	}

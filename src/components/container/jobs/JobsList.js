@@ -1,16 +1,11 @@
 import React from 'react';
+import superagent from 'superagent'
 
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';
-import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
-import MenuItem from 'material-ui/MenuItem';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import RaisedButton from 'material-ui/RaisedButton';
+import FontIcon from 'material-ui/FontIcon';import MenuItem from 'material-ui/MenuItem';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-
-
 
 import JobCard from '../../presentation/jobs/JobCard';
 
@@ -18,48 +13,7 @@ class JobsList extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			list: [
-				{
-					idjob: 1,
-					job_type: 'Conservatory',
-					description: 'Lorem ipsum dolor sit amet',
-					quote_price: 1250.00,
-					expenses: 900.00,
-					status: 'Completed',
-					paid: false,
-					idcustomer: 1
-				},
-				{
-					idjob: 1,
-					job_type: 'Conservatory',
-					description: 'Lorem ipsum dolor sit amet',
-					quote_price: 1250.00,
-					expenses: 900.00,
-					status: 'Completed',
-					paid: false,
-					idcustomer: 1
-				},
-				{
-					idjob: 1,
-					job_type: 'Conservatory',
-					description: 'Lorem ipsum dolor sit amet',
-					quote_price: 1250.00,
-					expenses: 900.00,
-					status: 'Completed',
-					paid: false,
-					idcustomer: 1
-				},
-				{
-					idjob: 1,
-					job_type: 'Conservatory',
-					description: 'Lorem ipsum dolor sit amet',
-					quote_price: 1250.00,
-					expenses: 900.00,
-					status: 'Completed',
-					paid: false,
-					idcustomer: 1
-				}
-			],
+			list: [],
 			columns: 1,
 			value: 1
 		}
@@ -72,6 +26,14 @@ class JobsList extends React.Component {
 	componentDidMount(){
 		const initialColumnSize = this.props.columns;
 		this.setState({value: initialColumnSize});
+		superagent.get('/api/job')
+		.end((err, res) => {
+			if(err){
+				alert('ERROR: ' + err)
+			}
+			const jobs = res.body.response;
+			this.setState({list: jobs})
+		})
 	}
 	render(){
 		const columnSize = 12 / this.state.value;

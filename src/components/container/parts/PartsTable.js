@@ -47,6 +47,7 @@ class PartsTable extends React.Component{
 	}
 	updatePartId(){
 		if(this.state.list[0] !== undefined){
+			console.log(this.state.list);
 			const newPartId = this.state.list[this.state.list.length - 1].idpart + 1;
 			let updatedPart = Object.assign({}, this.state.part);
 			updatedPart.idpart = newPartId;

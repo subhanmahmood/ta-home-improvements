@@ -9,7 +9,7 @@ export default {
             bottom: 24
         },
         dialog: {
-            width: '50%',
+            width: '100%',
             maxWidth: 'none'
         }
     } 
