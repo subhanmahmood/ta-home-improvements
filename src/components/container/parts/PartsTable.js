@@ -62,14 +62,12 @@ class PartsTable extends React.Component{
 	}
 	deleteItem(id){
 		const oldList = Object.assign([], this.state.list);
-		const newList = Object.assign([], []);
-		for(let i = 0; i < oldList.length; i++){
-			const currentItem = oldList[i];
-			if(currentItem.idpart !== id){
-				console.log({id, currentItem})
-				newList.push(currentItem)
+		const newList = oldList.map((newItem) => {
+			if(newItem.idpart !== id){
+				return newItem
 			}
-		}
+		})
+		
 		this.setState({list: newList});
 	}
 	handleSubmit(){			
@@ -79,7 +77,7 @@ class PartsTable extends React.Component{
 		.send(this.state.part)
 		.end((err, res) => {
 			if(err){
-				alert('ERROR: ' + err)
+				alert('ERROR: ' + err)	
 			}
 			this.toggleAddPart();
 			let updatedList = Object.assign([], this.state.list);

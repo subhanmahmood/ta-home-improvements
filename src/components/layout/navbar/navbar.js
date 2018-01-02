@@ -11,16 +11,20 @@ import Badge from 'material-ui/Badge';
 class Navbar extends React.Component {
 	constructor(props){
 		super(props);
-
 		this.state = {
 		     list: [
 				{
-					linkName: 'Home',
+					linkName: 'Dashboard',
 					link: '/'
 				}, {
 					linkName: 'Customers',
 					link: '/customers'
-				}, {
+				},
+				{
+					linkName: 'Appointments',
+					link: '/appointments'
+				}, 
+				{
 					linkName: 'Jobs',
 					link: '/jobs'
 				}, {

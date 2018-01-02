@@ -8,7 +8,8 @@ module.exports = {
     jobs: './src/jobs.js',
     parts: './src/parts.js',
     editCustomer: './src/editCustomer.js',
-    job: './src/job.js'
+    job: './src/job.js',
+    appointments: './src/appointments.js'
   },
   output: {
     filename: 'public/build/[name].bundle.js',

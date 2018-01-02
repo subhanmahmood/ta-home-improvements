@@ -5,7 +5,7 @@ import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Ca
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import CustomersList from '../../container/customer/customersList';
+import CustomersTable from '../../container/customer/CustomerTable';
 
 class Customers extends React.Component {
 	constructor(props){
@@ -16,7 +16,7 @@ class Customers extends React.Component {
 			<div className="container" style={{marginTop: 20}}>
 				<div className="row">
 					<div className="col s12">
-						<CustomersList />
+						<CustomersTable/>
 						<br/>
 					</div>
 				</div>

@@ -24,10 +24,7 @@ class Dashboard extends React.Component {
 				<Card key={i} style={{marginBottom: 20 }}>
 					<CardTitle title="Conservatory - Subhan Mahmood" subtitle="Ongoing" subtitleColor={red500} style={{paddingBottom: 0}}/>
 					<CardText>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-					Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-					Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-					Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
+						Victorian-style conservatory to be installed at rear of property. 4m x 3m. Glass Roof. Golden Oak Frame. Full Build.
 					</CardText>
 					<CardActions>
 						<FlatButton label="Mark as completed" />
