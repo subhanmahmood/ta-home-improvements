@@ -14,8 +14,7 @@ class AddPartRow extends React.Component {
 				cost_per_unit: ''
 			}
 		}
-	}
-	
+	}	
 	render(){
 		const inputStyle = {
 			fontSize: 13

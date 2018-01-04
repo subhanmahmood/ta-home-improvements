@@ -49736,7 +49736,6 @@ var JobCard = function (_React$Component) {
 					alert('ERROR: ' + err);
 				}
 				var customer = res.body.response[0];
-				console.log(customer);
 				_this2.setState({ customer: customer });
 			});
 		}
@@ -51535,8 +51534,25 @@ var JobsList = function (_React$Component) {
 		_this.state = {
 			list: [],
 			columns: 1,
-			value: 1
+			value: 1,
+			jobs: [{
+				job_type: "Conservatory",
+				profit: 1
+			}, {
+				job_type: "Conservatory",
+				profit: 2
+			}, {
+				job_type: "sd",
+				profit: 3
+			}, {
+				job_type: "Conservatory",
+				profit: 4
+			}, {
+				job_type: "Conservatory",
+				profit: 5
+			}]
 		};
+		_this.calculateProfitJobType = _this.calculateProfitJobType.bind(_this);
 		return _this;
 	}
 
@@ -51546,6 +51562,16 @@ var JobsList = function (_React$Component) {
 			this.setState({
 				value: value
 			});
+		}
+	}, {
+		key: 'calculateProfitJobType',
+		value: function calculateProfitJobType(array, n) {
+			n |= 0;
+			if (n === array.length) {
+				return 0;
+			} else {
+				return array[n].profit + this.calculateProfitJobType(array, n + 1);
+			}
 		}
 	}, {
 		key: 'componentDidMount',
@@ -51561,6 +51587,12 @@ var JobsList = function (_React$Component) {
 				var jobs = res.body.response;
 				_this2.setState({ list: jobs });
 			});
+			var conservatoryJobs = this.state.jobs.filter(function (job) {
+				return job.job_type === "Conservatory";
+			});
+			console.log(conservatoryJobs);
+			var profit = this.calculateProfitJobType(conservatoryJobs);
+			console.log(profit);
 		}
 	}, {
 		key: 'render',

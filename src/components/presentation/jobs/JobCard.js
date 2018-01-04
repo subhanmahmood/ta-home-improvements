@@ -20,7 +20,6 @@ class JobCard extends React.Component {
 				alert('ERROR: ' + err)
 			}
 			const customer = res.body.response[0];
-			console.log(customer)
 			this.setState({customer: customer})
 		})
 	}

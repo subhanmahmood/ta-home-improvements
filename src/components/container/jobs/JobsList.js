@@ -15,14 +15,45 @@ class JobsList extends React.Component {
 		this.state = {
 			list: [],
 			columns: 1,
-			value: 1
+			value: 1,
+			jobs: [
+				{
+					job_type: "Conservatory",
+					profit: 1
+				},
+				{
+					job_type: "Conservatory",
+					profit: 2
+				},
+				{
+					job_type: "sd",
+					profit: 3
+				},
+				{
+					job_type: "Conservatory",
+					profit: 4
+				},
+				{
+					job_type: "Conservatory",
+					profit: 5
+				}
+			]
 		}
+		this.calculateProfitJobType = this.calculateProfitJobType.bind(this);
 	}
 	handleChange(event, value){
 	    this.setState({
 	      value: value,
 	    });
-	  }
+	}	
+	calculateProfitJobType(array, n){
+		n |= 0;
+		if(n === array.length){
+			return 0;
+		} else {
+			return array[n].profit + this.calculateProfitJobType(array, n + 1);
+		}
+	}
 	componentDidMount(){
 		const initialColumnSize = this.props.columns;
 		this.setState({value: initialColumnSize});
@@ -34,6 +65,12 @@ class JobsList extends React.Component {
 			const jobs = res.body.response;
 			this.setState({list: jobs})
 		})
+		const conservatoryJobs = this.state.jobs.filter((job) => {
+			return job.job_type === "Conservatory";
+		})
+		console.log(conservatoryJobs)
+		const profit = this.calculateProfitJobType(conservatoryJobs);
+		console.log(profit)
 	}
 	render(){
 		const columnSize = 12 / this.state.value;

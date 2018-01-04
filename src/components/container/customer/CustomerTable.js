@@ -63,6 +63,33 @@ class CustomersTable extends React.Component {
     handleClose(){
         this.setState({open:false})
     }
+    sortCustomers(type){
+        let customers = this.state.customers;
+        if(type === 'ascending'){
+            for(let i = 0; i < customers.length; i++){
+                for(let i = 0; i < customers.length; i++){
+                    const currentCustomer = customers[i]
+                    const nextCustomer = customers[i + 1];
+                    if(currentCustomer.name > nextCustomer.name){
+                        customers[i] = nextCustomer;
+                        customers[i + 1] = currentCustomer;
+                    }
+                }
+            }
+        }else if(type === 'descending'){
+            for(let i = 0; i < customers.length; i++){
+                for(let i = 0; i < customers.length; i++){
+                    const currentCustomer = customers[i]
+                    const nextCustomer = customers[i + 1];
+                    if(currentCustomer.name < nextCustomer.name){
+                        customers[i] = nextCustomer;
+                        customers[i + 1] = currentCustomer;
+                    }
+                }
+            }
+        }
+        this.setState({customers: customers})
+    }
     render(){
         const TableRows = this.state.customers.map((customer, i) => {
             return(

@@ -28,7 +28,7 @@ class Dashboard extends React.Component {
 					</CardText>
 					<CardActions>
 						<FlatButton label="Mark as completed" />
-						<FlatButton label="View details" />
+						<FlatButton label="View details" />-
 					</CardActions>
 				</Card>		
 				)

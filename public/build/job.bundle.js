@@ -46955,7 +46955,6 @@ var JobCard = function (_React$Component) {
 					alert('ERROR: ' + err);
 				}
 				var customer = res.body.response[0];
-				console.log(customer);
 				_this2.setState({ customer: customer });
 			});
 		}

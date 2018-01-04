@@ -49783,6 +49783,35 @@ var CustomersTable = function (_React$Component) {
             this.setState({ open: false });
         }
     }, {
+        key: 'sortCustomers',
+        value: function sortCustomers(type) {
+            var customers = this.state.customers;
+            if (type === 'ascending') {
+                for (var i = 0; i < customers.length; i++) {
+                    for (var _i = 0; _i < customers.length; _i++) {
+                        var currentCustomer = customers[_i];
+                        var nextCustomer = customers[_i + 1];
+                        if (currentCustomer.name > nextCustomer.name) {
+                            customers[_i] = nextCustomer;
+                            customers[_i + 1] = currentCustomer;
+                        }
+                    }
+                }
+            } else if (type === 'descending') {
+                for (var _i2 = 0; _i2 < customers.length; _i2++) {
+                    for (var _i3 = 0; _i3 < customers.length; _i3++) {
+                        var _currentCustomer = customers[_i3];
+                        var _nextCustomer = customers[_i3 + 1];
+                        if (_currentCustomer.name < _nextCustomer.name) {
+                            customers[_i3] = _nextCustomer;
+                            customers[_i3 + 1] = _currentCustomer;
+                        }
+                    }
+                }
+            }
+            this.setState({ customers: customers });
+        }
+    }, {
         key: 'render',
         value: function render() {
             var TableRows = this.state.customers.map(function (customer, i) {

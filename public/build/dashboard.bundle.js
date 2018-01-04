@@ -62434,7 +62434,8 @@ var Dashboard = function (_React$Component) {
 						_Card.CardActions,
 						null,
 						_react2.default.createElement(_FlatButton2.default, { label: 'Mark as completed' }),
-						_react2.default.createElement(_FlatButton2.default, { label: 'View details' })
+						_react2.default.createElement(_FlatButton2.default, { label: 'View details' }),
+						'-'
 					)
 				);
 			});
