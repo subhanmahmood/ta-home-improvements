@@ -1,10 +1,15 @@
 import React from 'react';
 import superagent from 'superagent';
 
+
+import Dialog from 'material-ui/Dialog';
 import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton'
 import CustomerCard from '../../presentation/customers/CustomerCard';
+
+import {red500} from 'material-ui/styles/colors';
 
 class EditCustomer extends React.Component {
 	constructor(props){
@@ -13,9 +18,13 @@ class EditCustomer extends React.Component {
 			customer: {},
 			default: {
 				text: "Hello"
-			}
+			},
+			open:false
 		}
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.deleteCustomer = this.deleteCustomer.bind(this);
+		this.handleClose = this.handleClose.bind(this);
+		this.handleOpen = this.handleOpen.bind(this);
 	}
 	componentDidMount(){
 		const id = document.getElementById("id").innerHTML;
@@ -29,6 +38,12 @@ class EditCustomer extends React.Component {
 			this.setState({customer: results});
 		})
 	}
+	handleOpen(){
+		this.setState({open: true})
+	}
+	handleClose(){
+		this.setState({open: false})
+	}
 	handleChange(event){
 		const name = event.target.name;
 		const value = event.target.value;
@@ -38,7 +53,6 @@ class EditCustomer extends React.Component {
 	}
 	handleSubmit(event){
 		event.preventDefault();
-
 		const customer = this.state.customer;
 		superagent.put(`/api/customer/${this.state.customer.idcustomer}`)
 		.set('Content-Type', 'application/json')
@@ -46,6 +60,17 @@ class EditCustomer extends React.Component {
 		.end((err, res) => {
 			if(err){
 				alert('ERROR: ' + err)
+			}
+		})
+	}
+	deleteCustomer(){
+		superagent.delete(`/api/customer/${this.state.customer.idcustomer}`)
+		.end((err, res) => {
+			if(err){
+				alert('ERROR: ' + err)
+			}
+			if(res.body.status === 200){
+				window.location = "/customers"
 			}
 		})
 	}
@@ -57,10 +82,41 @@ class EditCustomer extends React.Component {
 			},
 			submitButton: {
 				width: '100%'
+			},
+			deleteButton: {
+				width: '100%',
+				marginTop: 10,
+				labelStyle: {
+					color: '#fff'
+				}
+			},
+			dialogDelete: {
+				color: red500
 			}
 		}
+		const actions = [
+			<FlatButton
+              label="Close"
+              primary={true}
+              onClick={this.handleClose}
+            />,
+            <FlatButton
+			  label="Delete"     
+			  labelStyle={styles.dialogDelete}         
+              primary={true}
+              onClick={this.deleteCustomer}
+            />,
+		]
 		return(
 			<div className="container" style={{marginTop: 20}}>
+				<Dialog
+					title="Confirm deletion"
+					modal={true}
+					actions={actions}
+					open={this.state.open}
+					onRequestClose={this.handleClose}>
+					Are you sure you want to delete this customer. This will cause all jobs associated with this customer to also be deleted.
+				</Dialog>
 				<div className="row">
                     <div className="col s12 m6 push-m3">
 						<h2>Edit Customer</h2>
@@ -139,6 +195,12 @@ class EditCustomer extends React.Component {
 							label="Update customer"
 							primary={true}
 							onClick={this.handleSubmit} />
+						<RaisedButton
+							style={styles.deleteButton}
+							backgroundColor={red500}
+							onClick={this.handleOpen}
+							labelStyle={styles.deleteButton.labelStyle}
+							label="Delete Customer"/>
 					</div>
 				</div>
 			</div>

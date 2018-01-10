@@ -6,6 +6,7 @@ module.exports = {
     console.log(req.body)
     connection.query(query, req.body, function(error, results, fields){
       if ( error ) {
+        console.log(error)
         res.send({ "status": 500, "error": error, "response": null })
       }
       res.send({ "status": 200, "error": null, "response": null });
@@ -33,8 +34,9 @@ module.exports = {
   deleteById(req, res){
     var id = req.params.id;
     var query = 'DELETE FROM tblcustomer WHERE idcustomer = ?';
-    connection.query(query, id, function(error, results, fields) {
+    connection.query(query, id, function(error,  results, fields) {
       if(error){
+        console.log(error)
         res.send({ "status": 500, "error": error, "response": null })        
       }
       res.send({ "status": 200, "error": null, "response": results })      

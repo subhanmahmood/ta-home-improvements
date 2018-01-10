@@ -6,6 +6,7 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import CustomersTable from '../../container/customer/CustomerTable';
+import CustomerList from '../../container/customer/CustomerList';
 
 class Customers extends React.Component {
 	constructor(props){
@@ -17,6 +18,7 @@ class Customers extends React.Component {
 				<div className="row">
 					<div className="col s12">
 						<CustomersTable/>
+						<CustomerList/>
 						<br/>
 					</div>
 				</div>

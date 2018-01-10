@@ -25,9 +25,10 @@ class PartsTableRow extends React.Component {
 			if(err){
 				alert('ERROR: ' + err);
 			}
-			console.log(res)
+			if(res.body.status === 200){
+				this.props.delete(this.props.part.idpart);
+			}
 		});
-		this.props.delete(this.props.part.idpart);
 	}
 	render(){
 		console.log(this.props.part)
@@ -36,10 +37,10 @@ class PartsTableRow extends React.Component {
 				<TableRowColumn>{this.props.part.idpart}</TableRowColumn>
 				<TableRowColumn>{this.props.part.name}</TableRowColumn>
 				<TableRowColumn>{this.props.part.description}</TableRowColumn>
-				<TableRowColumn>{this.props.part.cost_per_unit}</TableRowColumn>
+				<TableRowColumn>{this.props.part.cost_per_unit.toFixed(2)}</TableRowColumn>
 				<TableRowColumn><FlatButton label="delete" onClick={this.handleDelete} labelStyle={{color: red500}}/></TableRowColumn>
 			</TableRow>
-			)
+		)
 	}
 }
 

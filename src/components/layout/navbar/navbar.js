@@ -37,6 +37,8 @@ class Navbar extends React.Component {
 			],
 			open: false
 		}
+		this.handleDrawerClose = this.handleDrawerClose.bind(this);
+		this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
 	}
 	handleDrawerToggle(){
 		this.setState({open: !this.state.open})
@@ -51,23 +53,28 @@ class Navbar extends React.Component {
 			}
 		}
 		const navItems = 
-			<div>{
+			<div className="hide-on-small-only">{
 				this.state.list.map((link, i) => {
 					return(				
 							<FlatButton key={i} label={link.linkName} href={link.link} style={styles.button} />
 						
 					)
 				})
-			}</div>
+			}</div> 
+		const MenuItems = this.state.list.map((link, i) => {
+			return(
+				<a href={link.link} key={i} style={{textDecoration: 'none'}}>
+					<MenuItem primaryText={link.linkName} />
+				</a>
+			)
+		})
 		return (
 			<div>
-				<AppBar title="TA Home Improvements" onLeftIconButtonTouchTap={this.handleDrawerToggle.bind(this)} iconElementRight={navItems} iconStyleRight={{marginTop:15}}/>
+				<AppBar title="TA Home Improvements" onLeftIconButtonTouchTap={this.handleDrawerToggle} iconElementRight={navItems} iconStyleRight={{marginTop:15}}/>
 				<Drawer docked={false} 
 						open={this.state.open}
-						onRequestChange={(open) => this.setState({open})}
-				>
-		          <MenuItem onClick={this.handleDrawerClose.bind(this)}>Menu Item</MenuItem>
-		          <MenuItem onClick={this.handleDrawerClose.bind(this)}>Menu Item 2</MenuItem>
+						onRequestChange={(open) => this.setState({open})}>
+						{MenuItems}
 		        </Drawer>
 			</div>
 		)

@@ -6,8 +6,82 @@ import TextField from 'material-ui/TextField';
 import Snackbar from 'material-ui/Snackbar';
 import FontIcon from 'material-ui/FontIcon';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-
 import superagent from 'superagent';
+var faker = require('faker')
+
+import validationHelpers from '../helpers/validationHelpers';
+
+const validationMethods = {
+	first_name: function(value){
+		let errors = new Array();
+		errors = {
+			presenceCheck: validationHelpers.presenceCheck(value),
+			containsAlpha: validationHelpers.checkAlphaString(value),
+		}
+		return validationHelpers.checkAllTrue(errors)
+	},
+	last_name: function(value){
+		let errors = new Array();
+		errors = {
+			presenceCheck: validationHelpers.presenceCheck(value),
+			containsAlpha: validationHelpers.checkAlphaString(value),
+		}
+		return validationHelpers.checkAllTrue(errors)
+	},
+	address_line_1: function(value){
+		
+		let errors = new Array();
+		errors = {
+			presenceCheck: validationHelpers.presenceCheck(value),
+			containsAlphaNumeric: validationHelpers.checkAlphaNumeric(value),
+		}
+		return validationHelpers.checkAllTrue(errors)
+	},
+	address_line_2: function(value){
+		
+		let errors = new Array();
+		errors = {
+			containsAlphaNumeric: validationHelpers.checkAlphaNumeric(value),
+		}
+		return validationHelpers.checkAllTrue(errors)
+	},
+	address_line_3: function(value){		
+		let errors = new Array();
+		errors = {
+			containsAlphaNumeric: validationHelpers.checkAlphaNumeric(value),
+		}
+		return validationHelpers.checkAllTrue(errors)
+	},
+	postcode: function(value){
+		let errors = new Array();
+		const regex = /\b((?:(?:gir)|(?:[a-pr-uwyz])(?:(?:[0-9](?:[a-hjkpstuw]|[0-9])?)|(?:[a-hk-y][0-9](?:[0-9]|[abehmnprv-y])?)))) ?([0-9][abd-hjlnp-uw-z]{2})\b/
+		errors = {
+			presenceCheck: validationHelpers.presenceCheck(value),
+			inRange: validationHelpers.rangeCheck(value, 5, 8),
+			containsAlphaNumeric:  validationHelpers.checkAlphaNumeric(value),
+			formatCheck: validationHelpers.checkRegExp(value, regex)
+		}
+		return validationHelpers.checkAllTrue(errors)
+	},
+	phone_number: function(value){
+		let errors = new Array();
+		errors = {
+			presenceCheck: validationHelpers.presenceCheck(value),
+			inRange: validationHelpers.rangeCheck(value, 10, 10),
+			containsNumbersOnly: validationHelpers.checkNumericString(value)
+		}
+		return validationHelpers.checkAllTrue(errors);
+	},
+	email: function(value){
+		let errors = new Array();
+		const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+		errors = {
+			presenceCheck: validationHelpers.presenceCheck(value),
+			regexCheck: validationHelpers.checkRegExp(value, regex)
+		}
+		return validationHelpers.checkAllTrue(errors);
+	}
+}
 
 class AddCustomerDialog extends React.Component {
 	constructor(props){
@@ -29,9 +103,10 @@ class AddCustomerDialog extends React.Component {
 			}
 		}
 		this.handleChange = this.handleChange.bind(this);
+		this.handleClose = this.handleClose.bind(this)
+		this.generateCustomers = this.generateCustomers.bind(this);
 	}
 	handleOpenSnackbar(){
-		console.log("trigg")
 		this.setState({snackbarOpen: true});
 	}
 	handleOpen(){
@@ -48,16 +123,13 @@ class AddCustomerDialog extends React.Component {
 	handleChange(event){
 		const name = event.target.name;
 		const value = event.target.value;
-		
-		if(value === ''){
-			let updatedErrors = Object.assign({}, this.state.errors);
-			updatedErrors[name] = true
-			this.setState({errors: updatedErrors})
-		}else{
-			let updatedErrors = Object.assign({}, this.state.errors);
-			updatedErrors[name] = false
-			this.setState({errors: updatedErrors})
-		}
+
+		let validation = validationMethods[name];
+		const error = !validation(value.toLowerCase())
+		let updatedErrors = Object.assign({}, this.state.errors);
+		updatedErrors[name] = error;
+		this.setState({errors: updatedErrors})
+
 		let updatedCustomer = Object.assign({}, this.state.customer);
 		updatedCustomer[name] = value;
 		this.setState({customer: updatedCustomer});
@@ -65,19 +137,43 @@ class AddCustomerDialog extends React.Component {
 	handleSubmit(event){
 		event.preventDefault();
 		var data = this.state.customer;
+		if(validationHelpers.checkAllTrue(this.state.errors)){
+			superagent.post('/api/customer')
+			.set('Content-Type', 'application/json')
+			.send(this.state.customer)
+			.end((err, res) => {
+				if(err){
+					alert('ERROR: ' + err)
+				}
+				if(res.body.status === 200){
+					this.handleClose;
+				}
+			})
+		}
+	}
+	generateCustomers(){
+		const customer = {
+			first_name: faker.name.firstName(),
+			last_name: faker.name.lastName(),
+			address_line_1: faker.address.streetAddress(),
+			address_line_2: '',
+			address_line_3: '',
+			postcode: faker.address.zipCode(),
+			phone_number: faker.phone.phoneNumber(),
+			email: faker.internet.email()
+		}
 		superagent.post('/api/customer')
-	    .set('Content-Type', 'application/json')
-	    .send(this.state.customer)
-	    .end((err, response) => {
-			console.log(response)
-	    	if(err){
-	    		this.setState({snackbarOpen: true, snackbarMessage: 'Failed to add customer!'});		    
-	    	}
-	    	if(response.statusCode === 200){
-	    		this.setState({snackbarOpen: true, snackbarMessage: 'Added customer successfully!'});		    
-	    		this.props.updateList(this.state.customer);
-	    	}
-	    })
+		.set('Content-Type', 'application/json')
+		.send(customer)
+		.end((err, res) => {
+			if(err){
+				alert('ERROR: ' + err)
+			}
+			if(res.body.status = 200){
+				this.props.updateList(customer);
+				this.handleClose()
+			}
+		})
 	}
 	render(){
 		const errors = this.state.errors;
@@ -92,7 +188,12 @@ class AddCustomerDialog extends React.Component {
 				key={2}
 				label="Cancel"
 				primary={true}
-				onClick={this.handleClose.bind(this)} />
+				onClick={this.handleClose.bind(this)} />,
+			<FlatButton
+				key={3}
+				label="Generate"
+				primary={true}
+				onClick={this.generateCustomers}/>
 		]
 		const styles = {
 			dialog : {
@@ -128,51 +229,54 @@ class AddCustomerDialog extends React.Component {
 		          modal={true}
 		          open={this.state.open}
 		          contentStyle={styles.dialog}
-		          onRequestClose={this.handleClose.bind(this)}
+				  onRequestClose={this.handleClose.bind(this)}
+				  autoScrollBodyContent={true}
 		        >
 					<form onSubmit={this.handleSubmit.bind(this)}>
 						<TextField 
 							onChange={this.handleChange} 
 							style={styles.input} 
-							errorText={errors.first_name ? 'This field is required' : ''} 
+							errorText={errors.first_name ? 'Make sure this field is not empty, and does not contain any special characters or numbers' : ''} 
 							hintText="First name" 
 							name="first_name"/>
 						<TextField 
 							onChange={this.handleChange} 
 							style={styles.input} 
-							errorText={errors.last_name ? 'This field is required' : ''} 
+							errorText={errors.last_name ? 'Make sure this field is not empty, and does not contain any special characters or numbers' : ''} 
 							hintText="Last name" 
 							name="last_name"/>
 						<TextField 
 							onChange={this.handleChange} 
 							style={styles.input} 
-							errorText={errors.address_line_1 ? 'This field is required' : ''} 
+							errorText={errors.address_line_1 ? 'Make sure this field is not empty and does not contain any special characters' : ''} 
 							hintText="Address Line 1" 
 							name="address_line_1"/>
 						<TextField 
 							onChange={this.handleChange} 
 							style={styles.input} 
+							errorText={errors.address_line_2 ? 'Make sure this field is not empty and does not contain any special characters' : ''} 
 							hintText="Address Line 2" 
 							name="address_line_2"/>
 						<TextField 
 							onChange={this.handleChange} 
 							style={styles.input} 
+							errorText={errors.address_line_3 ? 'Make sure this field is not empty and does not contain any special characters' : ''} 
 							hintText="Address Line 3" 
 							name="address_line_3"/>
 						<TextField 
 							onChange={this.handleChange} 
 							style={styles.input} 
-							errorText={errors.postcode ? 'This field is required' : ''} 
+							errorText={errors.postcode ? 'Make sure that this field is not empty, only contains letters and is between 5 and 7 characters' : ''} 
 							hintText="Postcode" name="postcode"/>
 						<TextField 
 							onChange={this.handleChange} 
 							style={styles.input} 
-							errorText={errors.phone_number ? 'This field is required' : ''} 
+							errorText={errors.phone_number ? 'Make sure that this field is not empty, only contains numbers and is exactly 10 characters long' : ''} 
 							hintText="Phone number" name="phone_number"/>
 						<TextField 
 							onChange={this.handleChange} 
 							style={styles.input} 
-							errorText={errors.email ? 'This field is required' : ''} 
+							errorText={errors.email ? 'Make sure this field is not empty and your email is in the correct format' : ''} 
 							hintText="Email" name="email"/>
 						<div style={{ textAlign: 'right', padding: 8, margin: '24px -24px -24px -24px' }}>
 							{actions}
