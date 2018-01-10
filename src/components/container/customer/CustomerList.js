@@ -68,7 +68,7 @@ class CustomerList extends React.Component{
             return (<CustomerCard customer={customer} key={i}/>)
         })
         return(
-            <div className="show-on-med-and-down">
+            <div className="show-on-small hide-on-med-and-up">
                 {CustomerCards}
                 <AddCustomerDialog updateList={this.addCustomer}/>
             </div>

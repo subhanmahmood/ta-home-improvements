@@ -15,7 +15,7 @@ var index = require('./routes/index');
 var api = require('./routes/api');
 
 var mysql = require('mysql');
-
+var connection = require('./database');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hjs');
@@ -28,12 +28,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req, res, next){
-	res.locals.connection = mysql.createConnection({
-		host: '127.0.0.1',
-		user: 'root',
-		password: 'subhan',
-		database: 'app'
-	});
+	res.locals.connection = connection;
 	res.locals.connect;
 	next();
 })
