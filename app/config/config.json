@@ -2,13 +2,13 @@
  
     "development": {
  
-        "username": "root",
+        "username": "subhan1234",
  
         "password": "subhan",
  
         "database": "app",
  
-        "host": "127.0.0.1",
+        "host": "nea.c7soqmonzoo9.eu-west-2.rds.amazonaws.com",
  
         "dialect": "mysql"
  
