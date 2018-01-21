@@ -4,7 +4,7 @@ export default {
             width: '100%'
         },
         addButton: {
-            position: 'absolute',
+            position: 'fixed',
             right: 24,
             bottom: 24
         },

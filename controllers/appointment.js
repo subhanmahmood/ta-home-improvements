@@ -6,6 +6,7 @@ module.exports = {
     var query = 'INSERT INTO tblappointment SET ?';
     connection.query(query, req.body, function(error, results, fields){
       if (error) {
+        console.log(error)
         res.send({ "status": 500, "error": error, "response": null })
       }
       res.send({ "status": 200, "error": null, "response": results });
@@ -22,7 +23,7 @@ module.exports = {
   },
   findById: function(req, res){
     var id = parseInt(req.params.id);
-    var query = 'SELECT *  FROM tblappointment WHERE idjob = ?';
+    var query = 'SELECT *  FROM tblappointment WHERE idappointment = ?';
     connection.query(query, id, function(error, results, fields){
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })
@@ -33,9 +34,10 @@ module.exports = {
   },
   deleteById(req, res){
     var id = req.params.id;
-    var query = 'DELETE FROM tblappointment WHERE idjob = ?';
+    var query = 'DELETE FROM tblappointment WHERE idappointment = ?';
     connection.query(query, id, function(error, results, fields) {
       if(error){
+        console.log(error)
         res.send({ "status": 500, "error": error, "response": null })        
       }
       res.send({ "status": 200, "error": null, "response": results })      
@@ -44,7 +46,7 @@ module.exports = {
   findAndUpdateById: function(req, res){
     var id = req.params.id;
     var body = req.body;
-    var query = 'UPDATE tblappointment SET ? WHERE idjob = ?';
+    var query = 'UPDATE tblappointment SET ? WHERE idappointment = ?';
     connection.query(query, [body, id], function(error, results, fields) {
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })

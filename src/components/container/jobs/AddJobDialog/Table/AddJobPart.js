@@ -46,7 +46,6 @@ class AddJobPart extends React.Component {
             if(data[0] === undefined){
                 
             }
-            console.log(data)
         })
     }
     handlePartSelectChange(event, index, value){
@@ -62,7 +61,6 @@ class AddJobPart extends React.Component {
         this.setState({jobPart: updatedJobPart});
     }
     handleQuantityKeyDown(e){
-        console.log(e.keyCode)
         if(e.keyCode === 13){
             this.addJobPart;
         }

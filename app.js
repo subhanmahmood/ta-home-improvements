@@ -2,8 +2,10 @@ var express = require('express');
 var http = require('http');
 var path = require('path');
 var app = express();
+var passport = require('passport')
+var session = require('express-session')
+var env = require('dotenv').load()
 var server = http.createServer(app);
-var io = require('socket.io').listen(server);
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -23,8 +25,8 @@ app.set('view engine', 'hjs');
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req, res, next){
@@ -35,6 +37,34 @@ app.use(function(req, res, next){
 
 app.use('/', index);
 app.use('/api/', api);
+
+ // For Passport
+ app.use(session({ secret: 'keyboard cat',resave: true, saveUninitialized:true})); // session secret
+ app.use(passport.initialize());
+ app.use(passport.session()); // persistent login sessions
+
+
+//Models
+ var models = require("./app/models");
+
+
+ //Routes 
+ var authRoute = require('./app/routes/auth.js')(app,passport);
+
+
+ //load passport strategies
+ require('./app/config/passport/passport.js')(passport,models.user);
+
+
+ //Sync Database
+  models.sequelize.sync().then(function(){
+ console.log('Nice! Database looks fine')
+
+ }).catch(function(err){
+ console.log(err,"Something went wrong with the Database Update!")
+ });
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

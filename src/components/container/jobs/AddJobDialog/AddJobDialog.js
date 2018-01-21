@@ -14,7 +14,13 @@ import JobTypeSelect from './Select/JobTypeSelect';
 import JobPartTable from './Table/JobPartTable';
 import PartSelect from './Select/PartSelect';
 
+import appointmentHelpers from '../../appointments/helpers';
+
 import styles from './styles';
+
+const validation = {
+	
+}
 
 class AddJobDialog extends React.Component {
 	constructor(props){
@@ -32,6 +38,16 @@ class AddJobDialog extends React.Component {
 				idcustomer: '',
 				expenses: 0,
 				status: 'Quote',
+				paid: false,
+				date_added: ''
+			},
+			errors: {
+				job_type: false,
+				description: false,
+				idcustomer: false,
+				expenses: false,
+				quote_price: 0,
+				status: false,
 				paid: false
 			},
 			jobParts: [],
@@ -103,10 +119,23 @@ class AddJobDialog extends React.Component {
 				part = this.state.parts[i];
 			}
 		}
-		const cost = part.cost_per_unit * jobPart.quantity;
-		const totalCost = this.state.expenses + cost;
 		let updatedJobParts = Object.assign([], this.state.jobParts);
-		updatedJobParts.push(jobPart);
+		let jpExists = false;
+		let totalCost = 0
+		for(let i = 0; i < updatedJobParts.length; i++){
+			if(updatedJobParts[i].idpart === jobPart.idpart){
+				jpExists = true
+				updatedJobParts[i].quantity = parseInt(updatedJobParts[i].quantity) + parseInt(jobPart.quantity)
+				const cost = part.cost_per_unit * updatedJobParts[i].quantity;
+				totalCost = this.state.expenses + cost;
+			}
+		}
+		if(!jpExists){
+			jobPart.quantity = parseInt(jobPart.quantity)
+			const cost = part.cost_per_unit * jobPart.quantity;
+			totalCost = this.state.expenses + cost;
+			updatedJobParts.push(jobPart);
+		}
 		this.setState({jobParts: updatedJobParts, expenses: totalCost});
 	}	
 	deleteJobPart(jobPart){
@@ -120,25 +149,27 @@ class AddJobDialog extends React.Component {
 		const totalCost = this.state.expenses - cost;
 		const oldJobParts = Object.assign([], this.state.jobParts);
 		const newJobParts = Object.assign([], []);
-		oldJobParts.forEach((jp) => {			
-			console.log(jp)
-			console.log(jobPart.idpart)
+		oldJobParts.forEach((jp) => {	
 			if(jp.idpart !== jobPart.idpart){
 				newJobParts.push(jobPart);				
 			}
-		})
+		})	
 		this.setState({expenses: cost, jobParts: newJobParts})
 	}
 	handleSubmit(){
+		const date = appointmentHelpers.date();
+		const job = this.state.job;
+		job.date_added = date;
+		job.expenses = this.state.expenses;
+		job.quote_price = job.expenses * 1.5;
 		superagent.post('/api/job/')
 		.set('Content-Type', 'application/json')
-		.send(this.state.job)
+		.send(job)
 		.end((err, res) => {
 			if(err){
 				alert('ERROR: ' + err)
-			} else if(res.body.status === 200){
-				console.log("Successfully posted")
-				
+			}
+			if(res.body.status === 200){				
 				superagent.get('/api/job')
 				.end((err, res) => {
 					if(err){
@@ -146,23 +177,27 @@ class AddJobDialog extends React.Component {
 					}
 					const jobs = res.body.response
 					const currentId = jobs[jobs.length - 1].idjob;
+					const currentJob = jobs[jobs.length - 1];
 					this.setState({currentJobId: currentId});
-					this.state.jobParts.forEach((jobPart) => {
-						jobPart.idjob = currentId
 
-						superagent.post('/api/jobpart')
+					this.state.jobParts.forEach((jobPart) => {
+						jobPart.idjob = currentId;
+						superagent.post('/api/jobitem')
 						.set('Content-Type', 'application/json')					
 						.send(jobPart)
 						.end((err, res) => {
 							if(err){
 								console.log(err)
 							}
-							console.log("Status jobpart post: " + res.body.status)
+							if(res.body.status === 200){
+								this.handleClose()
+							}
 						})
 					})
-				})
-			}
-			
+				});
+				
+				this.props.addJob(currentJob);
+			}			
 		})
 	}
 	render(){
@@ -187,11 +222,12 @@ class AddJobDialog extends React.Component {
 				</FloatingActionButton>				
 				<Dialog
 		          title="Add Job"
-		          modal={true}
+				  modal={true}
+				  actions={actions}
 		          open={this.state.open}
 		          contentStyle={style.dialog}
 		          onRequestClose={this.handleClose.bind(this)}
-				>					
+				>				
 					<div className="row">
 						<div className="col s12 m4">
 							Estimated Cost: £{(this.state.expenses).toFixed(2)}
@@ -237,9 +273,6 @@ class AddJobDialog extends React.Component {
 					</div>						
 					<div className="row">
 						<AddJobPart add={this.addJobPart}/>
-					</div>
-					<div style={{ textAlign: 'right', padding: 8, margin: '24px -24px -24px -24px' }}>
-						{actions}
 					</div>
 		        </Dialog>
 			</div>

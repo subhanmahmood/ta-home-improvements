@@ -4,56 +4,95 @@ import superagent from 'superagent'
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';import MenuItem from 'material-ui/MenuItem';
+import FontIcon from 'material-ui/FontIcon';
+import MenuItem from 'material-ui/MenuItem';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import SelectField from 'material-ui/SelectField';
+import AddJobDialog from './AddJobDialog/AddJobDialog'
+import Card from 'material-ui/Card/Card';
+import { CardTitle } from 'material-ui/Card';
+import CardActions from 'material-ui/Card/CardActions';
+import FlatButton from 'material-ui/FlatButton/FlatButton';
+import { grey500, red500, green500, cyan500, deepOrange500, brown500, purple500 } from 'material-ui/styles/colors';
+import CardText from 'material-ui/Card/CardText';
 
-import JobCard from '../../presentation/jobs/JobCard';
+class JobCard extends React.Component {
+	render(){
+		const job = this.props.job;
+		const styles = {
+			card: {
+				marginBottom: 20
+			}
+		}
+		let jobTypeColor = cyan500;
+		switch (job.job_type.toLowerCase()) {
+			case 'conservatory':
+				jobTypeColor = deepOrange500;
+				break;
+			case 'doors/windows':
+				jobTypeColor = brown500;
+				break;
+			case 'general':
+				jobTypeColor = purple500;
+				break;
+			default:
+				break;
+		}
+		let color = grey500;
+		if(job.status.toLowerCase() === 'ongoing'){
+			color = red500;
+		} else if (job.status.toLowerCase() === 'completed') {
+			color = green500;
+		}
+
+		const title = 
+			<div>
+				<span style={{
+					backgroundColor: jobTypeColor,
+					color: '#fff',
+					paddingLeft: 8,
+					paddingRight: 8,
+					paddingTop: 2,
+					paddingBottom: 2, 
+					display: 'inline-block', 
+					fontWeight: 700, 
+					borderBottomLeftRadius: 5, 
+					borderBottomRightRadius: 5, 
+					borderTopLeftRadius: 5, 
+					borderTopRightRadius: 5}}>{job.job_type}</span> -&nbsp;<span style={{color: color}}>{job.status}</span> -&nbsp; 
+				{job.first_name + " " + job.last_name}
+				
+			</div>;
+		return(
+			<Card style={styles.card}>
+				<CardTitle title={title} style={{paddingBottom: 0}}/>
+				<CardText style={{paddingTop: 10, paddingBottom: 0}}>
+					
+				</CardText>
+				<CardActions>
+					<FlatButton label="Mark as completed" />
+					<FlatButton label="View details" href={`/jobs/${this.props.job.idjob}`} />
+				</CardActions>
+			</Card>		
+		)
+	}
+}
 
 class JobsList extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			list: [],
+			jobs: [],
+			jobList: new Array(),
 			columns: 1,
 			value: 1,
-			jobs: [
-				{
-					job_type: "Conservatory",
-					profit: 1
-				},
-				{
-					job_type: "Conservatory",
-					profit: 2
-				},
-				{
-					job_type: "sd",
-					profit: 3
-				},
-				{
-					job_type: "Conservatory",
-					profit: 4
-				},
-				{
-					job_type: "Conservatory",
-					profit: 5
-				}
-			]
+			valueJobType: 1,
+			valueJobStatus: 1
 		}
-		this.calculateProfitJobType = this.calculateProfitJobType.bind(this);
-	}
-	handleChange(event, value){
-	    this.setState({
-	      value: value,
-	    });
+		this.addJob = this.addJob.bind(this);
+		this.handleJobTypeChange = this.handleJobTypeChange.bind(this);
+		this.handleJobStatusChange = this.handleJobStatusChange.bind(this);
 	}	
-	calculateProfitJobType(array, n){
-		n |= 0;
-		if(n === array.length){
-			return 0;
-		} else {
-			return array[n].profit + this.calculateProfitJobType(array, n + 1);
-		}
-	}
 	componentDidMount(){
 		const initialColumnSize = this.props.columns;
 		this.setState({value: initialColumnSize});
@@ -63,27 +102,92 @@ class JobsList extends React.Component {
 				alert('ERROR: ' + err)
 			}
 			const jobs = res.body.response;
-			this.setState({list: jobs})
+			this.setState({jobs: jobs, jobList: jobs})
 		})
-		const conservatoryJobs = this.state.jobs.filter((job) => {
-			return job.job_type === "Conservatory";
-		})
-		console.log(conservatoryJobs)
-		const profit = this.calculateProfitJobType(conservatoryJobs);
-		console.log(profit)
+	}
+	handleChange(event, value){
+	    this.setState({
+	      value: value,
+	    });
+	}
+	handleJobTypeChange(event, value, index){
+		const types = ['All', 'Conservatory', 'Doors/Windows', 'General'];
+		if(types[index - 1] === 'All'){
+			this.setState({jobList: this.state.jobs});
+		}else{
+			const jobList = this.state.jobs.filter((job) => {
+				return job.job_type === types[index - 1]
+			})
+			this.setState({jobList: jobList});
+		}
+	    this.setState({
+	      valueJobType: value + 1,
+	    });
+	}
+	handleJobStatusChange(event, value, index){
+		const status = ['All', 'Quote', 'Ongoing', 'Completed'];
+		
+		if(status[index - 1] === 'All'){
+			this.setState({jobList: this.state.jobs});
+		}else{
+			const jobList = this.state.jobList.filter((job) => {
+				console.log(job.status)
+				console.log(status[index - 1])
+				return job.status === status[index - 1]
+			})
+			this.setState({jobList: jobList});
+		}
+	    this.setState({
+	      valueJobStatus: value + 1,
+	    });
+	}
+	addJob(job){
+		let updatedJobs = Object.assign(this.state.jobs);
+		updatedJobs.push(job)
+		this.setState({jobs: updatedJobs});
+	}	
+	calculateProfitJobType(array, n){
+		n |= 0;
+		if(n === array.length){
+			return 0;
+		} else {
+			return array[n].profit + this.calculateProfitJobType(array, n + 1);
+		}
 	}
 	render(){
 		const columnSize = 12 / this.state.value;
 		const columnClass = "card col s12 m" + columnSize;
 
-		const JobCards = this.state.list.map((job, i) => {
+		const JobCards = this.state.jobList.map((job, i) => {
 			return (<div className={columnClass} key={i} ><JobCard job={job} /></div>)
 		});
 		
 		return(
 			<div>
-				<Toolbar style={{backgroundColor: '#fff'}}>
-					<ToolbarGroup firstChild={true}>
+				<Toolbar style={{backgroundColor: '#fff', marginBottom: 20}}>
+					<ToolbarGroup firstChild={true} style={{width: '40%'}}>
+						<SelectField    
+							style={{width: '100%'}}
+							floatingLabelText="Filter job type"
+							value={this.state.valueJobType}
+							onChange={this.handleJobTypeChange}>
+							<MenuItem value={1} primaryText="All"/>
+							<MenuItem value={2} primaryText="Conservatory"/>
+							<MenuItem value={3} primaryText="Doors/Windows"/>
+							<MenuItem value={4} primaryText="General"/>
+						</SelectField>
+					</ToolbarGroup>
+					<ToolbarGroup style={{width: '40%'}}>
+						<SelectField    
+							style={{width: '100%'}}
+							floatingLabelText="Filter job status"
+							value={this.state.valueJobStatus}
+							onChange={this.handleJobStatusChange}>
+							<MenuItem value={1} primaryText="All"/>
+							<MenuItem value={2} primaryText="Quote"/>
+							<MenuItem value={3} primaryText="Ongoing"/>
+							<MenuItem value={4} primaryText="Completed"/>
+						</SelectField>
 					</ToolbarGroup>
 					<ToolbarGroup>
 						<IconMenu
@@ -101,7 +205,8 @@ class JobsList extends React.Component {
 						</IconMenu>
 					</ToolbarGroup>
 				</Toolbar>
-				{JobCards}				
+				{JobCards}					
+				<AddJobDialog addJob={this.addJob}/>			
 			</div>
 		)
 	}

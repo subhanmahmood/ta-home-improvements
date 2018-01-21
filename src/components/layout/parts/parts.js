@@ -1,6 +1,7 @@
 import React from 'react';
 
 import PartsTable from '../../container/parts/PartsTable'
+import PartList from '../../container/parts/PartList';
 
 class Parts extends React.Component {
 	render(){
@@ -8,7 +9,7 @@ class Parts extends React.Component {
 			<div className="container" style={{marginTop: 20}}>
 				<div className="row">
 					<div className="col s12">
-						<PartsTable />	
+						<PartList />	
 						<br/>
 					</div>
 				</div>

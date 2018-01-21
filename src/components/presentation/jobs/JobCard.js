@@ -3,7 +3,7 @@ import superagent from 'superagent';
 
 import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
-import {red500, green500} from 'material-ui/styles/colors';
+import {red500, green500, cyan500} from 'material-ui/styles/colors';
 
 class JobCard extends React.Component {
 	constructor(props){
@@ -31,7 +31,12 @@ class JobCard extends React.Component {
 				marginBottom: 20
 			}
 		}
-
+		let statusColor = grey500;
+		if(this.state.job.status === 'Ongoing'){
+			statusColor = red500
+		}else if(this.state.job.status === 'Completed'){
+			statusColor = green500
+		}
 		let color;
 		if(job.status.toLowerCase() === 'ongoing'){
 			color = red500;
@@ -39,12 +44,40 @@ class JobCard extends React.Component {
 			color = green500;
 		}
 
+		const title = 
+			<p>
+				<span style={{
+					backgroundColor: cyan500,
+					color: '#fff',
+					paddingLeft: 8,
+					paddingRight: 8,
+					paddingTop: 2,
+					paddingBottom: 2, 
+					display: 'inline-block', 
+					fontWeight: 700, 
+					borderBottomLeftRadius: 5, 
+					borderBottomRightRadius: 5, 
+					borderTopLeftRadius: 5, 
+					borderTopRightRadius: 5}}>{job.job_type}</span> -&nbsp; 
+				<span style={{
+					backgroundColor: statusColor,
+					color: '#fff',
+					paddingLeft: 8,
+					paddingRight: 8,
+					paddingTop: 2,
+					paddingBottom: 2, 
+					display: 'inline-block', 
+					fontWeight: 700, 
+					borderBottomLeftRadius: 5, 
+					borderBottomRightRadius: 5, 
+					borderTopLeftRadius: 5, 
+					borderTopRightRadius: 5}}>{job.status}</span> - {job.first_name + " " + job.last_name}
+				
+			</p>;
+		console.log(title)
 		return(
 			<Card style={styles.card}>
-				<CardTitle title={`${job.job_type} - ${customer.first_name} ${customer.last_name} (${job.idjob})`} subtitle={job.status} subtitleColor={color} style={{paddingBottom: 0}}/>
-				<CardText>
-				{job.description}
-				</CardText>
+				<CardTitle title={title} subtitle={job.status} subtitleColor={color} style={{paddingBottom: 0}}/>
 				<CardActions>
 					<FlatButton label="Mark as completed" />
 					<FlatButton label="View details" href={`/jobs/${this.props.job.idjob}`} />

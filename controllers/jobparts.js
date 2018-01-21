@@ -22,7 +22,7 @@ module.exports = {
   },
   findById: function(req, res){
     var id = parseInt(req.params.id);
-    var query = 'SELECT *  FROM tbljobitem WHERE idjob = ?';
+    var query = 'SELECT name, cost_per_unit, tblpart.idpart, quantity FROM tbljobitem INNER JOIN tblpart ON tblpart.idpart = tbljobitem.idpart AND tbljobitem.idjob = ?';
     connection.query(query, id, function(error, results, fields){
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })

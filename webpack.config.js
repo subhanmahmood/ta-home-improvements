@@ -9,7 +9,11 @@ module.exports = {
     parts: './src/parts.js',
     editCustomer: './src/editCustomer.js',
     job: './src/job.js',
-    appointments: './src/appointments.js'
+    appointments: './src/appointments.js',
+    finances: './src/finances.js',
+    invoice: './src/invoice.js',
+    signin: './src/signin.js',
+    signup: './src/signup.js'
   },
   output: {
     filename: 'public/build/[name].bundle.js',

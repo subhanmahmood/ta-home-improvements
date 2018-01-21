@@ -116,9 +116,7 @@ class AddCustomerDialog extends React.Component {
 		this.setState({open: false})
 	}
 	handleRequestClose() {
-		this.setState({
-		snackbarOpen: false,
-		});
+		this.setState({snackbarOpen: false});
 	}
 	handleChange(event){
 		const name = event.target.name;
@@ -176,9 +174,11 @@ class AddCustomerDialog extends React.Component {
 		})
 	}
 	render(){
+		console.log(validationHelpers.checkAllTrue(this.state.errors))
 		const errors = this.state.errors;
 		const actions = [
 			<FlatButton 
+				
 				key={1}
 				label="Submit"
 				type="submit"
@@ -203,7 +203,7 @@ class AddCustomerDialog extends React.Component {
 				width: '100%'
 			},
 			addButton: {
-				position: 'absolute',
+				position: 'fixed',
 				right: 24,
 				bottom: 24
 			},
@@ -231,7 +231,7 @@ class AddCustomerDialog extends React.Component {
 		          contentStyle={styles.dialog}
 				  onRequestClose={this.handleClose.bind(this)}
 				  autoScrollBodyContent={true}
-		        >
+				>
 					<form onSubmit={this.handleSubmit.bind(this)}>
 						<TextField 
 							onChange={this.handleChange} 

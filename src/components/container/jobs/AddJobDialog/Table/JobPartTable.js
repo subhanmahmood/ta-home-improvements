@@ -10,7 +10,8 @@ import {
 	TableRowColumn,
 	TableFooter
   } from 'material-ui/Table';  
-import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import { red500 } from 'material-ui/styles/colors';
 
 class TableItem extends React.Component {
 	constructor(props){
@@ -20,13 +21,11 @@ class TableItem extends React.Component {
 		}
 	}
 	componentDidMount(){
-		console.log(this.props.jobPart.idpart)
 		superagent.get(`/api/part/${this.props.jobPart.idpart}`)
 		.end((err, res) => {
 			if(err){
 				alert('ERROR: ' + err);
 			}
-			console.log(res.body.error)
 			const part = res.body.response[0];
 			this.setState({part: part});
 		})
@@ -36,11 +35,11 @@ class TableItem extends React.Component {
 		const totalPrice = part.cost_per_unit * this.props.jobPart.quantity;
 		return(
 			<TableRow>
-				<TableRowColumn>{part.idpart}</TableRowColumn>
-				<TableRowColumn>{part.name}</TableRowColumn>
+				<TableRowColumn>{this.props.jobPart.idpart}</TableRowColumn>
+				<TableRowColumn>{this.state.part.name}</TableRowColumn>
 				<TableRowColumn>{this.props.jobPart.quantity}</TableRowColumn>
 				<TableRowColumn>{`£${(totalPrice).toFixed(2)}`}</TableRowColumn>
-				<TableRowColumn><RaisedButton label="delete" onClick={() => this.props.delete(this.props.jobPart)}/></TableRowColumn>
+				<TableRowColumn><FlatButton label="delete" labelStyle={{color: red500}} onClick={() => this.props.delete(this.props.jobPart)}/></TableRowColumn>
 			</TableRow>
 		)
 	}
@@ -51,9 +50,7 @@ class JobPartTable extends React.Component {
 		super(props);		
 	}
 	render(){
-		console.log(this.props.jobParts)
-		const TableRows = this.props.jobParts.map((jobPart, i) => {			
-			
+		const TableRows = this.props.jobParts.map((jobPart, i) => {				
 			return(<TableItem jobPart={jobPart} key={i} delete={this.props.delete} />)
 		})
 		return(

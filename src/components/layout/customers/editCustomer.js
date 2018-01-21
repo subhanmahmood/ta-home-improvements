@@ -61,6 +61,9 @@ class EditCustomer extends React.Component {
 			if(err){
 				alert('ERROR: ' + err)
 			}
+			if(res.body.status === 200)[
+				window.location = '/customers'
+			]
 		})
 	}
 	deleteCustomer(){

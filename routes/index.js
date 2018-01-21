@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 
-router.get('/', function(req, res, next) {
+/*router.get('/', function(req, res, next) {
   res.render('index', { title: 'TA Home Improvements', source: 'dashboard' });
 });
 
@@ -12,6 +12,10 @@ router.get('/jobs', function(req, res, next) {
 
 router.get('/jobs/:id', function(req, res, next){
 	res.render('singleItem', {title: 'Job', source: 'job', id: req.params.id})
+})
+
+router.get('/jobs/:id/invoice', function(req, res, next){
+	res.render('singleItem', {title: 'Invoice', source: 'invoice', id: req.params.id})
 })
 
 router.get('/jobs/:id/edit', function(req, res, next) {
@@ -36,6 +40,7 @@ router.get('/appointments', function(req, res, next){
 
 router.get('/finances', function(req, res, next){
 	res.render('index', {title: 'Finances', source: 'finances'})
-})
+});*/
+
 
 module.exports = router;

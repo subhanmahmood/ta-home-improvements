@@ -7,6 +7,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import AppBar from 'material-ui/AppBar';
 import Badge from 'material-ui/Badge';
 
+import {blue500} from 'material-ui/styles/colors';
 
 class Navbar extends React.Component {
 	constructor(props){
@@ -32,7 +33,10 @@ class Navbar extends React.Component {
 					link: '/parts'
 				}, {
 					linkName: 'Finances',
-					link: '/'
+					link: '/finances'
+				}, {
+					linkName: 'Logout',
+					link: '/logout'
 				}
 			],
 			open: false
