@@ -10,6 +10,7 @@ import SelectField from 'material-ui/SelectField/SelectField';
 import { MenuItem } from 'material-ui/IconMenu';
 import Slider from 'material-ui/Slider'
 import Snackbar from 'material-ui/Snackbar'
+import Toggle from 'material-ui/Toggle'
 
 class Job extends React.Component{
 	constructor(props){
@@ -169,21 +170,9 @@ class Job extends React.Component{
 				<div className="container" style={{marginTop: 20}}>
 					<div className="container">
 						<div className="row">
-							<h2 style={{fontWeight: 200}}><span style={{
-								backgroundColor: jobTypeColor,
-								color: '#fff',
-								paddingLeft: 8,
-								paddingRight: 8,
-								paddingTop: 2,
-								paddingBottom: 2, 
-								display: 'inline-block', 
-								fontWeight: 700, 
-								borderBottomLeftRadius: 5, 
-								borderBottomRightRadius: 5, 
-								borderTopLeftRadius: 5, 
-								borderTopRightRadius: 5}}>{job.job_type}</span> -&nbsp; 
-								<span style={{
-									backgroundColor: statusColor,
+							<div style={{float: 'left', display: 'inline-block'}}>
+								<h2 style={{fontWeight: 200}}><span style={{
+									backgroundColor: jobTypeColor,
 									color: '#fff',
 									paddingLeft: 8,
 									paddingRight: 8,
@@ -194,15 +183,33 @@ class Job extends React.Component{
 									borderBottomLeftRadius: 5, 
 									borderBottomRightRadius: 5, 
 									borderTopLeftRadius: 5, 
-									borderTopRightRadius: 5}}>{job.status}</span> - {job.first_name + " " + job.last_name}</h2>
+									borderTopRightRadius: 5}}>{job.job_type}</span> -&nbsp; 
+									<span style={{
+										backgroundColor: statusColor,
+										color: '#fff',
+										paddingLeft: 8,
+										paddingRight: 8,
+										paddingTop: 2,
+										paddingBottom: 2, 
+										display: 'inline-block', 
+										fontWeight: 700, 
+										borderBottomLeftRadius: 5, 
+										borderBottomRightRadius: 5, 
+										borderTopLeftRadius: 5, 
+										borderTopRightRadius: 5}}>{job.status}</span> - {job.first_name + " " + job.last_name}</h2>
+									
+							</div>
+							<div style={{display: 'inline-block', float: 'right', marginTop: 30}}>
+								<Toggle label="Paid"/>
+							</div>
 						</div>
 						<div className="row">
-								<div style={{width: '100%'}}>
-									<Slider step={0.5} value={statusValue} style={{padding: 0}} onChange={this.statusChange}/>
-								</div>
+							<div style={{width: '100%'}}>
+								<Slider step={0.5} value={statusValue} style={{padding: 0}} onChange={this.statusChange}/>
+							</div>
 						</div>
 						<div className="row">
-							<div><p style={{margin: 0}}><span style={{color: grey500, fontStyle: 'italic'}}>Date added:</span> {job.date_added}</p></div>						
+							<div style={{paddingTop: 20}}><p style={{margin: 0}}><span style={{color: grey500, fontStyle: 'italic'}}>Date added:</span> {job.date_added}</p></div>						
 						</div>
 						<div className="row" style={{marginTop: 20}}>
 								<p style={{margin: 0, width: '100%', fontStyle: 'italic', color: grey500}}>Description</p>

@@ -169,35 +169,26 @@ class AddJobDialog extends React.Component {
 			if(err){
 				alert('ERROR: ' + err)
 			}
-			if(res.body.status === 200){				
-				superagent.get('/api/job')
-				.end((err, res) => {
-					if(err){
-						console.log(err)
-					}
-					const jobs = res.body.response
-					const currentId = jobs[jobs.length - 1].idjob;
-					const currentJob = jobs[jobs.length - 1];
-					this.setState({currentJobId: currentId});
-
-					this.state.jobParts.forEach((jobPart) => {
-						jobPart.idjob = currentId;
-						superagent.post('/api/jobitem')
-						.set('Content-Type', 'application/json')					
-						.send(jobPart)
-						.end((err, res) => {
-							if(err){
-								console.log(err)
-							}
-							if(res.body.status === 200){
-								this.handleClose()
-							}
-						})
+			if(res.body.status === 200){
+				const currentId = res.body.response.insertId;
+				const currentJob = this.state.job;
+				currentJob.idjob = currentId;
+				this.props.add(currentJob)
+				this.state.jobParts.forEach((jobPart) => {
+					jobPart.idjob = currentId;
+					superagent.post('/api/jobitem')
+					.set('Content-Type', 'application/json')					
+					.send(jobPart)
+					.end((err, res) => {
+						if(err){
+							console.log(err)
+						}
+						if(res.body.status === 200){
+							this.handleClose()
+						}
 					})
-				});
-				
-				this.props.addJob(currentJob);
-			}			
+				})
+			}				
 		})
 	}
 	render(){

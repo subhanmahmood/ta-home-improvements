@@ -17,7 +17,7 @@ module.exports = function(app, passport) {
         res.render('index', {title: 'Jobs', source: 'jobs'})
     })
     
-    app.get('/jobs/:id', isLoggedIn, function(req, res, next){
+    app.get('/jobs/:id', function(req, res, next){
         res.render('singleItem', {title: 'Job', source: 'job', id: req.params.id})
     })
     
