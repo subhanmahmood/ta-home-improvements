@@ -30,12 +30,6 @@
  
     "production": {
  
-        "username": "subhan1234",
- 
-        "password": "Subhan1234",
- 
-        "database": "app",
- 
         "host": "nea.c7soqmonzoo9.eu-west-2.rds.amazonaws.com",
  
         "dialect": "mysql"
