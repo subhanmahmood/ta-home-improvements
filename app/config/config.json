@@ -30,11 +30,11 @@
  
     "production": {
  
-        "username": "",
+        "username": "subhan1234",
  
-        "password": null,
+        "password": "Subhan1234",
  
-        "database": "",
+        "database": "app",
  
         "host": "nea.c7soqmonzoo9.eu-west-2.rds.amazonaws.com",
  

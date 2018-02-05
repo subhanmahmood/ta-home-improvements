@@ -127,7 +127,7 @@ class EditCustomer extends React.Component {
 						<Grid>
 						<Row>
 							<Col xs={12} sm={12} md={12} lg={12}>
-								<h1 style={{fontWeight: 200, marginTop: 10,marginBottom: 0}}>Edit Job</h1>
+								<h1 style={{fontWeight: 200, marginTop: 10, marginBottom: 0}}>Edit Job</h1>
 							</Col>
 						</Row>
 						<Row>
