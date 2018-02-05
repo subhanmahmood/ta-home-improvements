@@ -8,6 +8,12 @@ const validationHelpers = {
 			
 		return true;
 	},
+	checkAllFalse: function(obj){
+		for(const o in obj)
+			if(obj[o]) return true;
+			
+		return false;
+	},
 	presenceCheck(value){
 		return value != ''
 	},
@@ -23,7 +29,7 @@ const validationHelpers = {
 		return (alpha.indexOf(char) != -1)
 	},
 	checkNumber: function(char){
-		const num = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+		const num = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
 		return (num.indexOf(char) != -1)
 	},
 	checkAlphaNumeric: function(value){

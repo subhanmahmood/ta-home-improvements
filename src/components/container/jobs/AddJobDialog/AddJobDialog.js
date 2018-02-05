@@ -8,6 +8,7 @@ import TextField from 'material-ui/TextField';
 import FontIcon from 'material-ui/FontIcon';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 
+import DatePicker from 'material-ui/DatePicker';
 import AddJobPart from './Table/AddJobPart';
 import CustomerSelect from './Select/CustomerSelect';
 import JobTypeSelect from './Select/JobTypeSelect';
@@ -15,12 +16,35 @@ import JobPartTable from './Table/JobPartTable';
 import PartSelect from './Select/PartSelect';
 
 import appointmentHelpers from '../../appointments/helpers';
+import validationHelpers from '../../helpers/validationHelpers';
 
 import styles from './styles';
 
-const validation = {
-	
+const validationMethods = {
+	description: function(value){
+		let errors = new Array();
+		errors = {
+			presenceCheck: validationHelpers.presenceCheck(value)
+		}
+		return validationHelpers.checkAllTrue(errors)
+	}
 }
+
+/*
+OBJECTIVE 
+5.0 - Allow the user to create new jobs
+5.1 - Once the user has clicked on the 
+add button on the main jobs page, they 
+will be taken to a new page which contains 
+a form. The user will be able to input 
+information about a job including the job 
+type, a description of the job, any parts 
+required and an estimate for the number of 
+labour hours.
+5.2 - Once the user has input all the details 
+and clicks the submit button, the data will be 
+inserted into the MySQL database.
+*/
 
 class AddJobDialog extends React.Component {
 	constructor(props){
@@ -42,13 +66,7 @@ class AddJobDialog extends React.Component {
 				date_added: ''
 			},
 			errors: {
-				job_type: false,
-				description: false,
-				idcustomer: false,
-				expenses: false,
-				quote_price: 0,
-				status: false,
-				paid: false
+				description: false
 			},
 			jobParts: [],
 			parts: new Array([]),
@@ -60,6 +78,8 @@ class AddJobDialog extends React.Component {
 		this.handleJobTypeSelectChange = this.handleJobTypeSelectChange.bind(this);
 		this.deleteJobPart = this.deleteJobPart.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleDateChange = this.handleDateChange.bind(this);
+		this.resetJob = this.resetJob.bind(this);
 	}
 	componentDidMount(){
 		superagent.get('/api/customer')
@@ -84,6 +104,7 @@ class AddJobDialog extends React.Component {
 		this.setState({open: true})
 	}
 	handleClose(){
+		this.resetJob()
 		this.setState({open: false})
 	}
 	handleJobTypeSelectChange(event, index, value){
@@ -108,17 +129,39 @@ class AddJobDialog extends React.Component {
 	handleDescriptionChange(event){
 		const name = event.target.name;
 		const value = event.target.value;
+		let validation = validationMethods[name];
+		const error = !validation(value.toLowerCase())
+		let updatedErrors = Object.assign({}, this.state.errors);
+		updatedErrors[name] = error;
+		this.setState({errors: updatedErrors})
 		let updatedJob = Object.assign({}, this.state.job)
 		updatedJob.description = value;
 		this.setState({job: updatedJob})
 	}
+	handleDateChange(a, date){
+        let d = date.getDate();
+        let m = date.getMonth();
+        if(d < 10){
+            d = ('0' + d).slice(-2)
+        }
+        if(m + 1 < 10){
+            m = ('0' + (m + 1)).slice(-2);
+        }
+        const newDate = `${date.getFullYear()}-${m}-${d}`
+        let updateJob = Object.assign({}, this.state.job);
+        updateJob.date_added = newDate;
+        this.setState({job: updateJob});
+    }
 	addJobPart(jobPart){
+		jobPart.quantity = parseInt(jobPart.quantity)
 		let part = new Array({});
 		for(let i = 0; i < this.state.parts.length; i++){
 			if(this.state.parts[i].idpart === jobPart.idpart){
 				part = this.state.parts[i];
 			}
 		}
+		jobPart.name = part.name;
+		jobPart.cost_per_unit = part.cost_per_unit
 		let updatedJobParts = Object.assign([], this.state.jobParts);
 		let jpExists = false;
 		let totalCost = 0
@@ -126,7 +169,8 @@ class AddJobDialog extends React.Component {
 			if(updatedJobParts[i].idpart === jobPart.idpart){
 				jpExists = true
 				updatedJobParts[i].quantity = parseInt(updatedJobParts[i].quantity) + parseInt(jobPart.quantity)
-				const cost = part.cost_per_unit * updatedJobParts[i].quantity;
+				
+				const cost = part.cost_per_unit * jobPart.quantity;
 				totalCost = this.state.expenses + cost;
 			}
 		}
@@ -151,17 +195,43 @@ class AddJobDialog extends React.Component {
 		const newJobParts = Object.assign([], []);
 		oldJobParts.forEach((jp) => {	
 			if(jp.idpart !== jobPart.idpart){
-				newJobParts.push(jobPart);				
+				newJobParts.push(jp);				
 			}
 		})	
-		this.setState({expenses: cost, jobParts: newJobParts})
+		this.setState({expenses: totalCost, jobParts: newJobParts})
+	}
+	resetJob(){
+		this.setState({
+			valueCustomer: 1,
+			valuePart: 1,
+			valueJobType: 1,
+			expenses: 0,
+			job: {
+				job_type: '',
+				description: '',
+				idcustomer: '',
+				expenses: 0,
+				status: 'Quote',
+				paid: false,
+				date_added: ''
+			},
+			errors: {
+				job_type: false,
+				description: false,
+				idcustomer: false,
+				expenses: false,
+				quote_price: 0,
+				status: false,
+				paid: false
+			},
+			jobParts: [],
+		});
 	}
 	handleSubmit(){
 		const date = appointmentHelpers.date();
 		const job = this.state.job;
-		job.date_added = date;
-		job.expenses = this.state.expenses;
-		job.quote_price = job.expenses * 1.5;
+		job.expenses = this.state.expenses.toFixed(2) ;
+		job.quote_price = (job.expenses * 1.5).toFixed(2);
 		superagent.post('/api/job/')
 		.set('Content-Type', 'application/json')
 		.send(job)
@@ -173,7 +243,7 @@ class AddJobDialog extends React.Component {
 				const currentId = res.body.response.insertId;
 				const currentJob = this.state.job;
 				currentJob.idjob = currentId;
-				this.props.add(currentJob)
+				this.props.addJob(currentJob)
 				this.state.jobParts.forEach((jobPart) => {
 					jobPart.idjob = currentId;
 					superagent.post('/api/jobitem')
@@ -188,6 +258,7 @@ class AddJobDialog extends React.Component {
 						}
 					})
 				})
+				this.resetJob()
 			}				
 		})
 	}
@@ -205,7 +276,7 @@ class AddJobDialog extends React.Component {
 				primary={true}
 				onClick={this.handleClose.bind(this)} />
 		]
-		const style = styles.main;		
+		const style = styles.main;	
 		return(
 			<div>
 				<FloatingActionButton style={style.addButton} onClick={this.handleOpen.bind(this)}>
@@ -215,8 +286,9 @@ class AddJobDialog extends React.Component {
 		          title="Add Job"
 				  modal={true}
 				  actions={actions}
-		          open={this.state.open}
-		          contentStyle={style.dialog}
+				  open={this.state.open}
+				  className="add-job"
+				  autoScrollBodyContent={true}
 		          onRequestClose={this.handleClose.bind(this)}
 				>				
 					<div className="row">
@@ -245,12 +317,23 @@ class AddJobDialog extends React.Component {
 					</div>
 					<div className="row">
 						<div className="col s12">
+							<DatePicker
+								style={{width: '100%'}}
+								textFieldStyle={{width: '100%'}}
+								autoOk={true}
+								hintText="Select Date"
+								onChange={this.handleDateChange}/>
+						</div>
+					</div>
+					<div className="row">
+						<div className="col s12">
 							<TextField 
 								style={{width:'100%'}}
 								name="description"
 								onChange={this.handleDescriptionChange}
 								textareaStyle={{width: '100%'}}
 								hintText="Description"
+								errorText={this.state.errors.description ? 'Make sure that this field is not empty' : ''}
 								multiLine={true}
 								rows={1}
 								rowsMax={4} 

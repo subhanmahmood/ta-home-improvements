@@ -1,0 +1,1 @@
+UPDATE tbljobitem SET ? WHERE idjob = ? AND idpart = ?

@@ -22,8 +22,21 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import Dialog from 'material-ui/Dialog'
+import CircularProgress from 'material-ui/CircularProgress';
 
 import AddCustomerDialog from './addCustomerDialog';
+
+/*
+OBJECTIVE
+6.0 - Display a list of all the customers 
+on the customers page. When the user clicks 
+on a customer they will be taken to a page 
+where they can edit the details of the 
+customer or delete them from the database. 
+There will also be a button that will take 
+the user to a page where they can add new 
+customers.
+*/
 
 class CustomersTable extends React.Component {
     constructor(props){
@@ -197,26 +210,32 @@ class CustomersTable extends React.Component {
                         </IconMenu>
                     </ToolbarGroup>
                 </Toolbar>
-                <Table 
-                    onCellClick={this.onCellClick}
-                    >
-                    <TableHeader 
-                        displaySelectAll={false}
-                        adjustForCheckbox={false}>
-                        <TableRow>
-                            <TableHeaderColumn>ID</TableHeaderColumn>
-                            <TableHeaderColumn>Name</TableHeaderColumn>
-                            <TableHeaderColumn>Address</TableHeaderColumn>
-                            <TableHeaderColumn>Postcode</TableHeaderColumn>
-                            <TableHeaderColumn>Phone Number</TableHeaderColumn>
-                            <TableHeaderColumn>Email</TableHeaderColumn>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody 
-                        displayRowCheckbox={false}>
-                    {TableRows}
-                    </TableBody>
-                </Table>
+                {this.state.customers.length === 0 ? 
+                    <div style={{textAlign: 'center'}}>
+                    <CircularProgress/>
+                    </div>
+                    : 
+                    <Table 
+                        onCellClick={this.onCellClick}>
+                        <TableHeader 
+                            displaySelectAll={false}
+                            adjustForCheckbox={false}>
+                            <TableRow>
+                                <TableHeaderColumn>ID</TableHeaderColumn>
+                                <TableHeaderColumn>Name</TableHeaderColumn>
+                                <TableHeaderColumn>Address</TableHeaderColumn>
+                                <TableHeaderColumn>Postcode</TableHeaderColumn>
+                                <TableHeaderColumn>Phone Number</TableHeaderColumn>
+                                <TableHeaderColumn>Email</TableHeaderColumn>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody 
+                            displayRowCheckbox={false}>
+                        {TableRows}
+                        </TableBody>
+                    </Table>
+                }
+                
                 <AddCustomerDialog updateList={this.addCustomer.bind(this)}/>
             </div>
         )

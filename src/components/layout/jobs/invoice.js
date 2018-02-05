@@ -25,7 +25,7 @@ class Invoice extends React.Component {
 		this.state = {
 			job: new Array(),
 			jobParts: new Array(),
-			parts: new Array()
+			parts: new Array()	
 		}
 		this.print = this.print.bind(this);
 		this.calculateTotalCost = this.calculateTotalCost.bind(this);

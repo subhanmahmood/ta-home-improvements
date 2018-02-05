@@ -6,10 +6,20 @@ import FlatButton from 'material-ui/FlatButton';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 import MenuItem from 'material-ui/MenuItem';
+import Snackbar from 'material-ui/Snackbar';
 import SelectField from 'material-ui/SelectField/SelectField';
 
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+
+/*
+OBJECTIVE
+10.0 - Allow the user to schedule a new 
+appointment. The user will need to select 
+a customer or add a new one and select a 
+date and time. This will then be added to 
+the MySQL database
+*/
 
 class AddAppointment extends React.Component{
     constructor(props){
@@ -17,6 +27,8 @@ class AddAppointment extends React.Component{
         this.state = {
             value: 1,
             open: false,
+            snackbarOpen: false,
+            snackbarMessage: '',
             customers: new Array(),
             appointment: {
                 date: '',
@@ -26,6 +38,8 @@ class AddAppointment extends React.Component{
         }
         this.handleClose = this.handleClose.bind(this);
         this.handleOpen = this.handleOpen.bind(this);
+        this.closeSnackbar = this.closeSnackbar.bind(this);
+        this.openSnackbar = this.openSnackbar.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleTimeChange = this.handleTimeChange.bind(this);
@@ -53,6 +67,18 @@ class AddAppointment extends React.Component{
     }
     handleClose(){
         this.setState({open: false});
+    }
+    openSnackbar(){
+		this.setState({snackbarOpen: true});
+	}
+	closeSnackbar(){
+		this.setState({snackbarOpen: false});
+	}
+	handleOpen(){
+		this.setState({open: true})
+	}
+	handleClose(){
+		this.setState({open: false})
     }
     handleDateChange(a, date){
         let d = date.getDate();
@@ -85,7 +111,11 @@ class AddAppointment extends React.Component{
             }
             if(res.body.status === 200){
                 this.props.addAppointment(this.state.appointment);
+                this.props.success()
+                this.setState({snackbarMessage: 'Added appointment successfully'}, this.openSnackbar);
                 this.handleClose();
+            } else {
+                this.setState({snackbarMessage: 'There seems to have been an error'}, this.openSnackbar);
             }
         })
     }
@@ -109,6 +139,11 @@ class AddAppointment extends React.Component{
         ]
         return(
             <div>
+                <Snackbar
+					open={this.state.snackbarOpen}
+					message={this.state.snackbarMessage}
+					autoHideDuration={4000}
+					onRequestClose={this.closeSnackbar}/>
                 <Dialog
                     actions={actions}
                     title="Add Appointment"

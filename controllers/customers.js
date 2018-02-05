@@ -8,8 +8,9 @@ module.exports = {
       if ( error ) {
         console.log(error)
         res.send({ "status": 500, "error": error, "response": null })
+      }else{
+        res.send({ "status": 200, "error": null, "response": null });
       }
-      res.send({ "status": 200, "error": null, "response": null });
     })
   },
   find: function(req, res){
@@ -17,8 +18,9 @@ module.exports = {
     connection.query(query, function(error, results, fields){
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })
-      };
-      res.send({ "status": 200, "error": null, "response": results });
+      }else{
+        res.send({ "status": 200, "error": null, "response": results });
+      }
     })
   },
   findById: function(req, res){
@@ -27,8 +29,9 @@ module.exports = {
     connection.query(query, id, function(error, results, fields){
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })
-      };
-      res.send({ "status": 200, "error": null, "response": results });
+      }else{
+        res.send({ "status": 200, "error": null, "response": results });
+      }
     })
   },
   deleteById(req, res){
@@ -38,8 +41,8 @@ module.exports = {
       if(error){
         console.log(error)
         res.send({ "status": 500, "error": error, "response": null })        
-      }
-      res.send({ "status": 200, "error": null, "response": results })      
+      }else{
+        res.send({ "status": 200, "error": null, "response": results }) }     
     })
   },
   findAndUpdateById: function(req, res){
@@ -50,8 +53,9 @@ module.exports = {
     connection.query(query, [body, id], function(error, results, fields) {
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })
-      };
-      res.send({ "status": 200, "error": null, "response": results})
+      }else{
+        res.send({ "status": 200, "error": null, "response": results})
+      }
     });
   },
   deleteAll: function(req, res){
@@ -59,8 +63,9 @@ module.exports = {
     connection.query(query, function(error, results, fields){
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })
-      };
-      res.send({ "status": 200, "error": null, "response": results });
+      }else{
+        res.send({ "status": 200, "error": null, "response": results });
+      }
     })
   }
 } 

@@ -16,67 +16,18 @@ import FlatButton from 'material-ui/FlatButton/FlatButton';
 import { grey500, red500, green500, cyan500, deepOrange500, brown500, purple500 } from 'material-ui/styles/colors';
 import CardText from 'material-ui/Card/CardText';
 
-class JobCard extends React.Component {
-	render(){
-		const job = this.props.job;
-		const styles = {
-			card: {
-				marginBottom: 20
-			}
-		}
-		let jobTypeColor = cyan500;
-		switch (job.job_type.toLowerCase()) {
-			case 'conservatory':
-				jobTypeColor = deepOrange500;
-				break;
-			case 'doors/windows':
-				jobTypeColor = brown500;
-				break;
-			case 'general':
-				jobTypeColor = purple500;
-				break;
-			default:
-				break;
-		}
-		let color = grey500;
-		if(job.status.toLowerCase() === 'ongoing'){
-			color = red500;
-		} else if (job.status.toLowerCase() === 'completed') {
-			color = green500;
-		}
+import JobCard from '../../presentation/jobs/JobCard'
 
-		const title = 
-			<div>
-				<span style={{
-					backgroundColor: jobTypeColor,
-					color: '#fff',
-					paddingLeft: 8,
-					paddingRight: 8,
-					paddingTop: 2,
-					paddingBottom: 2, 
-					display: 'inline-block', 
-					fontWeight: 700, 
-					borderBottomLeftRadius: 5, 
-					borderBottomRightRadius: 5, 
-					borderTopLeftRadius: 5, 
-					borderTopRightRadius: 5}}>{job.job_type}</span> -&nbsp;<span style={{color: color}}>{job.status}</span> -&nbsp; 
-				{job.first_name + " " + job.last_name}
-				
-			</div>;
-		return(
-			<Card style={styles.card}>
-				<CardTitle title={title} style={{paddingBottom: 0}}/>
-				<CardText style={{paddingTop: 10, paddingBottom: 0}}>
-					
-				</CardText>
-				<CardActions>
-					<FlatButton label="Mark as completed" />
-					<FlatButton label="View details" href={`/jobs/${this.props.job.idjob}`} />
-				</CardActions>
-			</Card>		
-		)
-	}
-}
+/*
+OBJECTVE
+4.0 - Display a list of all jobs, sorted by date 
+on the jobs page. On this page the user will be 
+able to view all completed and ongoing jobs and 
+will be able to create new jobs by clicking on 
+a button. When a user clicks on one of the jobs, 
+they will be taken to a page which includes more 
+details about the job.
+*/
 
 class JobsList extends React.Component {
 	constructor(props){
@@ -96,7 +47,7 @@ class JobsList extends React.Component {
 	componentDidMount(){
 		const initialColumnSize = this.props.columns;
 		this.setState({value: initialColumnSize});
-		superagent.get('/api/job')
+		superagent.get('/api/job?customer=true')
 		.end((err, res) => {
 			if(err){
 				alert('ERROR: ' + err)
@@ -143,8 +94,20 @@ class JobsList extends React.Component {
 	}
 	addJob(job){
 		let updatedJobs = Object.assign(this.state.jobs);
-		updatedJobs.push(job)
-		this.setState({jobs: updatedJobs});
+		let customer = new Array()
+		superagent.get(`/api/customer/${job.idcustomer}`)
+		.end((err, res) => {
+			if(err){
+				alert('ERROR: ' + err);
+			}else{
+				customer  = res.body.response[0]
+				job.first_name = customer.first_name;
+				job.last_name = customer.last_name;
+				console.log(job)
+				updatedJobs.push(job)
+				this.setState({jobs: updatedJobs});
+			}
+		})		
 	}	
 	calculateProfitJobType(array, n){
 		n |= 0;
@@ -193,12 +156,11 @@ class JobsList extends React.Component {
 						<IconMenu
 							onChange={this.handleChange.bind(this)}
 							iconButtonElement={
-							<IconButton touch={true} >
-								<FontIcon color='#a9a9a9' className="material-icons">view_columns</FontIcon>
-							</IconButton>
+								<IconButton touch={true} >
+									<FontIcon color='#a9a9a9' className="material-icons">view_columns</FontIcon>
+								</IconButton>
 							}
-							value={this.state.value}
-						>
+							value={this.state.value}>
 							<MenuItem primaryText="1" value={1}/>
 							<MenuItem primaryText="2" value={2}/>
 							<MenuItem primaryText="3" value={3}/>

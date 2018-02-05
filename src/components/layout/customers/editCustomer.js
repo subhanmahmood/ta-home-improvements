@@ -8,6 +8,7 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton'
 import CustomerCard from '../../presentation/customers/CustomerCard';
+import {Grid, Row, Col} from 'react-flexbox-grid'
 
 import {red500} from 'material-ui/styles/colors';
 
@@ -88,7 +89,6 @@ class EditCustomer extends React.Component {
 			},
 			deleteButton: {
 				width: '100%',
-				marginTop: 10,
 				labelStyle: {
 					color: '#fff'
 				}
@@ -111,102 +111,119 @@ class EditCustomer extends React.Component {
             />,
 		]
 		return(
-			<div className="container" style={{marginTop: 20}}>
+				<div>
 				<Dialog
-					title="Confirm deletion"
-					modal={true}
-					actions={actions}
-					open={this.state.open}
-					onRequestClose={this.handleClose}>
-					Are you sure you want to delete this customer. This will cause all jobs associated with this customer to also be deleted.
-				</Dialog>
-				<div className="row">
-                    <div className="col s12 m6 push-m3">
-						<h2>Edit Customer</h2>
-						<div className="col m6">
+				title="Confirm deletion"
+				modal={true}
+				actions={actions}
+				open={this.state.open}
+				onRequestClose={this.handleClose}>
+				Are you sure you want to delete this customer. This will cause all jobs associated with this customer to also be deleted.
+			</Dialog>
+			
+				<Grid>
+					<Row>
+						<Col xs={12} sm={12} md={6} lg={6} mdOffset={3} lgOffset={3}>
+						<Grid>
+						<Row>
+							<Col xs={12} sm={12} md={12} lg={12}>
+								<h1 style={{fontWeight: 200, marginTop: 10,marginBottom: 0}}>Edit Job</h1>
+							</Col>
+						</Row>
+						<Row>
+							<Col xs={12} sm={12} md={6} lg={6}>
 							<TextField
-								name="first_name"
-								value={this.state.customer.first_name}
-								floatingLabelFixed={true}
-								floatingLabelText="First Name"
-								onChange={this.handleChange.bind(this)}
-							/>
-						</div>
-						<div className="col m6">
+							name="first_name"
+							value={this.state.customer.first_name}
+							floatingLabelFixed={true}
+							floatingLabelText="First Name"
+							onChange={this.handleChange.bind(this)}
+						/>
+							</Col>
+							<Col xs={12} sm={12} md={6} lg={6}>
 							<TextField
-								name="last_name"
-								value={this.state.customer.last_name}
-								floatingLabelFixed={true}
-								floatingLabelText="Last Name"
-								onChange={this.handleChange.bind(this)}
-							/>
-						</div>
-						<div className="col m6">
+							name="last_name"
+							value={this.state.customer.last_name}
+							floatingLabelFixed={true}
+							floatingLabelText="Last Name"
+							onChange={this.handleChange.bind(this)}
+						/>
+							</Col>
+							<Col xs={12} sm={12} md={6} lg={6}>
 							<TextField
-								name="address_line_1"
-								value={this.state.customer.address_line_1}
-								floatingLabelFixed={true}
-								floatingLabelText="Address Line 1"
-								onChange={this.handleChange.bind(this)}
-							/>
-						</div>
-						<div className="col m6">
+							name="address_line_1"
+							value={this.state.customer.address_line_1}
+							floatingLabelFixed={true}
+							floatingLabelText="Address Line 1"
+							onChange={this.handleChange.bind(this)}
+						/>
+							</Col>
+							<Col xs={12} sm={12} md={6} lg={6}>
 							<TextField
-								name="address_line_2"
-								value={this.state.customer.address_line_2}
-								floatingLabelText="Address Line 2"
-								onChange={this.handleChange.bind(this)}
-							/>
-						</div>
-						<div className="col m6">
+							name="address_line_2"
+							value={this.state.customer.address_line_2}
+							floatingLabelText="Address Line 2"
+							onChange={this.handleChange.bind(this)}
+						/>
+							</Col>
+							<Col xs={12} sm={12} md={6} lg={6}>
 							<TextField
-								name="address_line_3"
-								value={this.state.customer.address_line_3}
-								floatingLabelText="Address Line 3"
-								onChange={this.handleChange.bind(this)}
-							/>
-						</div>
-						<div className="col m6">
+							name="address_line_3"
+							value={this.state.customer.address_line_3}
+							floatingLabelText="Address Line 3"
+							onChange={this.handleChange.bind(this)}
+						/>
+							</Col>
+							<Col xs={12} sm={12} md={6} lg={6}>
 							<TextField
-								name="postcode"
-								value={this.state.customer.postcode}
-								floatingLabelFixed={true}
-								floatingLabelText="Postcode"
-								onChange={this.handleChange.bind(this)}
-							/>
-						</div>
-						<div className="col m6">
+							name="postcode"
+							value={this.state.customer.postcode}
+							floatingLabelFixed={true}
+							floatingLabelText="Postcode"
+							onChange={this.handleChange.bind(this)}
+						/>
+							</Col>
+							<Col xs={12} sm={12} md={6} lg={6}>
 							<TextField
-								name="phone_number"
-								value={this.state.customer.phone_number}
-								floatingLabelFixed={true}
-								floatingLabelText="Phone Number"
-								onChange={this.handleChange.bind(this)}
-							/>
-						</div>
-						<div className="col m6">
+							name="phone_number"
+							value={this.state.customer.phone_number}
+							floatingLabelFixed={true}
+							floatingLabelText="Phone Number"
+							onChange={this.handleChange.bind(this)}
+						/>
+							</Col>
+							<Col xs={12} sm={12} md={6} lg={6}>
 							<TextField
-								name="idcustomer"
-								value={this.state.customer.idcustomer}
-								floatingLabelFixed={true}
-								floatingLabelText="IDr"
-								disabled={true}
-							/>
-						</div>
-						<RaisedButton 
-							style={styles.submitButton} 
-							label="Update customer"
-							primary={true}
-							onClick={this.handleSubmit} />
-						<RaisedButton
-							style={styles.deleteButton}
-							backgroundColor={red500}
-							onClick={this.handleOpen}
-							labelStyle={styles.deleteButton.labelStyle}
-							label="Delete Customer"/>
-					</div>
-				</div>
-			</div>
+							name="idcustomer"
+							value={this.state.customer.idcustomer}
+							floatingLabelFixed={true}
+							floatingLabelText="IDr"
+							disabled={true}
+						/>
+							</Col>
+						</Row>
+						<Row middle="xs">
+							<Col xs={12} sm={12} md={6} lg={6}>
+								<RaisedButton 
+								style={styles.submitButton} 
+								label="Update customer"
+								primary={true}
+								onClick={this.handleSubmit} />
+							</Col>
+							<Col xs={12} sm={12} md={6} lg={6}>
+								<RaisedButton
+									style={styles.deleteButton}
+									backgroundColor={red500}
+									onClick={this.handleOpen}
+									labelStyle={styles.deleteButton.labelStyle}
+									label="Delete Customer"/>
+							</Col>
+						</Row>
+					</Grid>
+						</Col>
+					</Row>
+				</Grid>
+			</div>					
 		)
 	}
 }

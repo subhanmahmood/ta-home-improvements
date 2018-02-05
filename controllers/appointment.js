@@ -8,18 +8,40 @@ module.exports = {
       if (error) {
         console.log(error)
         res.send({ "status": 500, "error": error, "response": null })
+      }else{
+        res.send({ "status": 200, "error": null, "response": results });
       }
-      res.send({ "status": 200, "error": null, "response": results });
     })
   },
   find: function(req, res){
-    var query = 'SELECT * FROM tblappointment';
-    connection.query(query, function(error, results, fields){
-      if ( error ) {
-        res.send({ "status": 500, "error": error, "response": null })
-      };
-      res.send({ "status": 200, "error": null, "response": results });
-    })
+    if(typeof req.query['date'] === 'string'){
+      var query = 'SELECT * FROM tblappointment INNER JOIN tblcustomer on tblappointment.idcustomer = tblcustomer.idcustomer AND tblappointment.date = ?'
+      connection.query(query, req.query['date'], function(error, results, fields){
+        if ( error ) {
+          res.send({ "status": 500, "error": error, "response": null })
+        }else{
+          res.send({ "status": 200, "error": null, "response": results });
+        }
+      })
+    } else if(typeof req.query['customer'] === 'string'){
+      var query = 'SELECT * FROM tblappointment INNER JOIN tblcustomer ON tblappointment.idcustomer = tblcustomer.idcustomer'
+      connection.query(query, function(error, results, fields){
+        if ( error ) {
+          res.send({ "status": 500, "error": error, "response": null })
+        }else{
+          res.send({ "status": 200, "error": null, "response": results });
+        }
+      })
+    } else {
+      var query = 'SELECT * FROM tblappointment';
+      connection.query(query, function(error, results, fields){
+        if ( error ) {
+          res.send({ "status": 500, "error": error, "response": null })
+        }else{
+          res.send({ "status": 200, "error": null, "response": results });}
+      })
+    }
+    
   },
   findById: function(req, res){
     var id = parseInt(req.params.id);
@@ -27,8 +49,9 @@ module.exports = {
     connection.query(query, id, function(error, results, fields){
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })
-      };
-      res.send({ "status": 200, "error": null, "response": results });
+      }else{
+        res.send({ "status": 200, "error": null, "response": results });
+      }
    
     })
   },
@@ -39,8 +62,9 @@ module.exports = {
       if(error){
         console.log(error)
         res.send({ "status": 500, "error": error, "response": null })        
-      }
-      res.send({ "status": 200, "error": null, "response": results })      
+      }else{
+        res.send({ "status": 200, "error": null, "response": results })    
+      }  
     })
   },
   findAndUpdateById: function(req, res){
@@ -50,8 +74,9 @@ module.exports = {
     connection.query(query, [body, id], function(error, results, fields) {
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })
-      };
-      res.send({ "status": 500, "error": null, "response": results})
+      }else{
+        res.send({ "status": 500, "error": null, "response": results})
+      }
     });
   },
   deleteAll: function(req, res){
@@ -59,8 +84,9 @@ module.exports = {
     connection.query(query, function(error, results, fields){
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })
-      };
-      res.send({ "status": 200, "error": null, "response": results });
+      }else{
+        res.send({ "status": 200, "error": null, "response": results });
+      }
     })
   }
 } 

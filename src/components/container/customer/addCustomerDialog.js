@@ -83,6 +83,22 @@ const validationMethods = {
 	}
 }
 
+/*
+OBJECTIVE
+7.0 - Allow the user to add new customers.
+7.1 - Once the user has clicked on the 
+add button on the main jobs page, they 
+will be taken to a new page which contains 
+a form. The user will be able to input 
+information about a job including the job 
+type, a description of the job, any parts 
+required and an estimate for the number of 
+labour hours.
+7.2 - Once the user has input all the details 
+and clicks the submit button, the data will 
+be inserted into the MySQL database.
+*/
+
 class AddCustomerDialog extends React.Component {
 	constructor(props){
 		super(props);

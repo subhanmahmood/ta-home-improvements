@@ -3,7 +3,7 @@ import superagent from 'superagent';
 
 import AddAppointment from './AddAppointment';
 import { Card, CardTitle, CardText, CardHeader } from 'material-ui/Card';
-import {cyan500, grey500} from 'material-ui/styles/colors';
+import {cyan500, grey500, grey300} from 'material-ui/styles/colors';
 import RaisedButton from 'material-ui/RaisedButton';
 import Divider from 'material-ui/Divider';
 import radio from 'material-ui/svg-icons/av/radio';
@@ -13,21 +13,9 @@ class AppointmentCard extends React.Component{
     constructor(props){
         super(props)
         this.state = {
-            customer: new Array(),
             color: ''
         }
         this.deleteAppointment = this.deleteAppointment.bind(this);
-    }
-    componentDidMount(){
-        superagent.get(`/api/customer/${this.props.appointment.idcustomer}`)
-        .end((err, res) => {
-            if(err){
-                alert('ERROR: ' + err)
-            }
-            const customer = res.body.response[0];
-
-            this.setState({customer: customer});
-        })      
     }
     deleteAppointment(){
         superagent.delete(`/api/appointment/${this.props.appointment.idappointment}`)
@@ -50,7 +38,7 @@ class AppointmentCard extends React.Component{
         }
 
         const apt = this.props.appointment;
-        const customer = this.state.customer
+        const customer = this.props.appointment
         const title = <p style={{margin: 0}}>
                         <span style={{
                             backgroundColor: color,
@@ -64,7 +52,7 @@ class AppointmentCard extends React.Component{
                             borderBottomLeftRadius: 5, 
                             borderBottomRightRadius: 5, 
                             borderTopLeftRadius: 5, 
-                            borderTopRightRadius: 5}}>{apt.time}</span> - {this.state.customer.first_name + " " + this.state.customer.last_name}</p>
+                            borderTopRightRadius: 5}}>{apt.time}</span> - {customer.first_name + " " + customer.last_name}</p>
         return(
             <div className="col s12" style={{marginBottom: 20, paddingBottom: -8}}>
                 <Card containerStyle={{ paddingBottom: 0 }}>
@@ -89,7 +77,24 @@ class AppointmentCard extends React.Component{
     }
 }
 
+/*
+OBJECTIVE
+9 - Display a list of scheduled appointment, 
+sorting them by date. When the user clicks on 
+an appointment, they will be taken to a page 
+displaying the appointment date and the customer 
+and job details.
+*/
 
+class NoAppointments extends React.Component {
+    render(){
+        return(
+            <div style={{textAlign: 'center'}}>
+                <h3 style={{color: grey300, fontWeight: 200}}>No appointments&nbsp;{this.props.section}</h3>
+            </div>
+        )
+    }
+}
 
 class AppointmentList extends React.Component{
     constructor(props){
@@ -108,10 +113,14 @@ class AppointmentList extends React.Component{
         this.sortFutureAppointments = this.sortFutureAppointments.bind(this);
         this.updateAppointments = this.updateAppointments.bind(this);
         this.addAppointment = this.addAppointment.bind(this);
+        this.getAppointments = this.getAppointments.bind(this);
         this.deleteAppointment = this.deleteAppointment.bind(this);
     }
     componentDidMount(){
-        superagent.get('/api/appointment')
+        this.getAppointments()
+    }
+    getAppointments(){
+        superagent.get('/api/appointment?customer=true')
         .end((err, res) => {
             if(err){
                 alert('ERROR: ' + err)
@@ -128,8 +137,6 @@ class AppointmentList extends React.Component{
         });
         const pastAppointments = this.state.appointments.filter((apt) => {
             const sd = apt.date;
-            console.log({sd, date});
-            console.log(apt.date < date)
             return apt.date < date;
         });
         const futureAppointments = this.state.appointments.filter((apt) => {
@@ -204,6 +211,7 @@ class AppointmentList extends React.Component{
         this.setState({pastAppointments: updatedAppointments})
     }
     addAppointment(apt){
+        console.log(apt)
         let updatedAppointments = Object.assign([], this.state.appointments);
         updatedAppointments.push(apt);
         this.setState({appointments: updatedAppointments}, this.updateAppointments);
@@ -238,22 +246,24 @@ class AppointmentList extends React.Component{
                         <div className="col s12 m6">
                             <h1 style={{fontWeight: 300}} onClick={this.sortAppointments}>Appointments Today</h1>
                             <div className="row">
-                                {CurrentAppointments}
+                                {this.state.currentAppointments.length === 0 ? <NoAppointments section="today"/> : CurrentAppointments}
                             </div>
                         </div>
                         <div className="col s12 m6">
                             <h1 style={{fontWeight: 300}} onClick={this.sortAppointments}>Appointments Coming up</h1>
                             <div className="row">
-                                {FutureAppointments}
+                                {this.state.futureAppointments.length === 0 ? <NoAppointments section="coming up"/> : FutureAppointments}
                             </div>
                             <div className="row">
-                                <h1 style={{fontWeight: 300}}>Past Appointments</h1>
-                                {PastAppointments}
+                                <div className="col s12">
+                                    <h1 style={{fontWeight: 300}}>Past Appointments</h1>
+                                    {this.state.pastAppointments.length === 0 ? <NoAppointments section="yet"/> : PastAppointments}
+                                </div>                                
                             </div>
                         </div>
                     </div>
                 </div>
-                <AddAppointment addAppointment={this.addAppointment}/>
+                <AddAppointment addAppointment={this.addAppointment} success={this.getAppointments}/>
             </div>
         )
     }

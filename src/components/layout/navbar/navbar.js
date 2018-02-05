@@ -9,6 +9,21 @@ import Badge from 'material-ui/Badge';
 
 import {blue500} from 'material-ui/styles/colors';
 
+/*
+OBJECTIVE
+3.0 - Allow the user to navigate through 
+the pages with the use of a navigation bar. 
+When a user clicks on a link, they will 
+be taken to the relevant page. The pages 
+that the user can access are:
+3.1 - Dashboard
+3.2 - Jobs
+3.3 - Customers
+3.4 - Finances
+3.5 - Schedule 
+3.6 - Profile
+*/
+
 class Navbar extends React.Component {
 	constructor(props){
 		super(props);

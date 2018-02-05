@@ -19,9 +19,30 @@ html {
   transition: height 0.4s;
 }
 
+.highlight {
+  color: #fff;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 2px;
+  padding-bottom: 2,;
+  display: inline-block; 
+  font-weight: 700;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
 @media only screen and (max-width: 600px) {
   .hide-on-small-only, .hide-on-small-and-down {
     display: none !important;
+  }
+  .add-job{
+    width: 100% !important;
+    max-width: none;
+    margin: 0 0 0 0!important;
+    max-height: none;
+    height: 100% !important;
   }
 }
 
@@ -41,11 +62,17 @@ html {
   .hide-on-med-only {
     display: none !important;
   }
+  .add-job {
+    width: 80%
+  }
 }
 
 @media only screen and (min-width: 993px) {
   .hide-on-large-only {
     display: none !important;
+  }
+  .add-job {
+    width: 60%
   }
 }
 

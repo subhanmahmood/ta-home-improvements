@@ -12,6 +12,11 @@ import Slider from 'material-ui/Slider'
 import Snackbar from 'material-ui/Snackbar'
 import Toggle from 'material-ui/Toggle'
 
+import CircularProgress from 'material-ui/CircularProgress';
+
+import {Grid, Row, Col} from 'react-flexbox-grid';
+import TextField from 'material-ui/TextField/TextField';
+
 class Job extends React.Component{
 	constructor(props){
 		super(props)
@@ -19,7 +24,8 @@ class Job extends React.Component{
 			job: new Array(),
 			jobParts: new Array(),
 			parts: new Array(),
-			snackbarOpen: false
+			snackbarOpen: false,
+			snackbarMessage: ''
 		}
 		this.addJobPart = this.addJobPart.bind(this);
 		this.deleteJobPart = this.deleteJobPart.bind(this);
@@ -27,6 +33,9 @@ class Job extends React.Component{
 		this.handleUpdate = this.handleUpdate.bind(this);
 		this.openSnackbar = this.openSnackbar.bind(this);
 		this.closeSnackbar = this.closeSnackbar.bind(this);
+		this.handleToggle = this.handleToggle.bind(this);
+		this.deleteJob = this.deleteJob.bind(this);
+		this.handleQuotePriceChange = this.handleQuotePriceChange.bind(this);
 	}
 	componentDidMount(){
 		const id = document.getElementById('id').innerHTML;
@@ -57,7 +66,6 @@ class Job extends React.Component{
 			const parts = res.body.response;
 			this.setState({parts: parts});
 		});
-
 	}
 	statusChange(event, value){
 		console.log(value);
@@ -71,13 +79,21 @@ class Job extends React.Component{
 		}
 		this.setState({job: updatedJob});
 	}
+	handleQuotePriceChange(event){
+		let updatedJob = Object.assign({}, this.state.job);
+		updatedJob.quote_price = event.target.value;
+		this.setState({job: updatedJob});
+	}
 	addJobPart(jobPart){
+		jobPart.quantity = parseInt(jobPart.quantity)
 		let part = new Array({});
 		for(let i = 0; i < this.state.parts.length; i++){
 			if(this.state.parts[i].idpart === jobPart.idpart){
 				part = this.state.parts[i];
 			}
 		}
+		jobPart.name = part.name;
+		jobPart.cost_per_unit = part.cost_per_unit
 		let updatedJobParts = Object.assign([], this.state.jobParts);
 		let jpExists = false;
 		let totalCost = 0
@@ -85,25 +101,53 @@ class Job extends React.Component{
 			if(updatedJobParts[i].idpart === jobPart.idpart){
 				jpExists = true
 				updatedJobParts[i].quantity = parseInt(updatedJobParts[i].quantity) + parseInt(jobPart.quantity)
+				
+				const cost = part.cost_per_unit * jobPart.quantity;
+				totalCost = this.state.expenses + cost;
 			}
 		}
 		if(!jpExists){
 			jobPart.quantity = parseInt(jobPart.quantity)
+			const cost = part.cost_per_unit * jobPart.quantity;
+			totalCost = this.state.expenses + cost;
 			updatedJobParts.push(jobPart);
 		}
-		this.setState({jobParts: updatedJobParts});
+		let updatedJob = Object.assign({}, this.state.job)
+		updatedJob.expenses = totalCost
+		this.setState({jobParts: updatedJobParts, job: updatedJob});
 	}
 	deleteJobPart(jobPart){
-		const updatedJobParts = this.state.jobParts.filter((jp) => {
-			return jp.idpart !== jobPart.idpart
-		})
-		this.setState({jobParts: updatedJobParts})
+		const idpart = jobPart.idpart
+		superagent.delete(`/api/jobitem/${jobPart.idjob}`)
+		.query({'idpart': idpart})
+		.end((err, res) => {
+			if(err){
+				this.setState({snackbarMessage: 'There was an error'}, this.openSnackbar);
+			}else{
+				const newCost = this.state.job.expenses - (jobPart.quantity * jobPart.cost_per_unit);
+				let updatedJob = Object.assign({}, this.state.job);
+				updatedJob.expenses = newCost;
+				updatedJob.quote_price = newCost * 1.5;
+		
+				let updatedJobParts = this.state.jobParts.filter((jp) => {
+					return jp.idpart !== jobPart.idpart
+				})
+				this.setState({job: updatedJob, jobParts: updatedJobParts, snackbarMessage: 'Deleted successfully'}, this.openSnackbar);
+			}			
+		})		
 	}
 	openSnackbar(){
 		this.setState({snackbarOpen: true});
 	}
 	closeSnackbar(){
 		this.setState({snackbarOpen: false});
+	}
+	handleToggle(event, isInputChecked){
+		console.log(isInputChecked)
+		let updatedJob = Object.assign({}, this.state.job);
+		const paid = isInputChecked ? 1 : 0 
+		updatedJob.paid = paid;
+		this.setState({job: updatedJob});
 	}
 	handleUpdate(){
 		let job = {};
@@ -128,7 +172,17 @@ class Job extends React.Component{
 			}
 			if(res.body.status === 200){
 				console.log("succ")
-				this.openSnackbar()
+				this.setState({snackbarMessage: 'Changes saved successfully!'}, this.openSnackbar);
+			}
+		})
+	}
+	deleteJob(){
+		superagent.delete(`/api/job/${this.state.job.idjob}`)
+		.end((err, res) => {
+			if(err){
+				this.setState({snackbarMessage: 'Ooops! There was an error'});
+			}else{
+				window.location = '/jobs'
 			}
 		})
 	}
@@ -164,70 +218,67 @@ class Job extends React.Component{
 			<div>				
 				<Snackbar
 					open={this.state.snackbarOpen}
-					message="Changes saved successfully"
+					message={this.state.snackbarMessage}
 					autoHideDuration={4000}
 					onRequestClose={this.closeSnackbar}/>
+				{this.state.job.job_type === undefined ? <CircularProgress/> 
+				:
 				<div className="container" style={{marginTop: 20}}>
-					<div className="container">
-						<div className="row">
-							<div style={{float: 'left', display: 'inline-block'}}>
-								<h2 style={{fontWeight: 200}}><span style={{
-									backgroundColor: jobTypeColor,
-									color: '#fff',
-									paddingLeft: 8,
-									paddingRight: 8,
-									paddingTop: 2,
-									paddingBottom: 2, 
-									display: 'inline-block', 
-									fontWeight: 700, 
-									borderBottomLeftRadius: 5, 
-									borderBottomRightRadius: 5, 
-									borderTopLeftRadius: 5, 
-									borderTopRightRadius: 5}}>{job.job_type}</span> -&nbsp; 
-									<span style={{
-										backgroundColor: statusColor,
-										color: '#fff',
-										paddingLeft: 8,
-										paddingRight: 8,
-										paddingTop: 2,
-										paddingBottom: 2, 
-										display: 'inline-block', 
-										fontWeight: 700, 
-										borderBottomLeftRadius: 5, 
-										borderBottomRightRadius: 5, 
-										borderTopLeftRadius: 5, 
-										borderTopRightRadius: 5}}>{job.status}</span> - {job.first_name + " " + job.last_name}</h2>
-									
+							<Grid fluid>
+								<Row middle="xs">
+									<Col xs={12} sm={12} md={8} lg={10}>
+										<h2 style={{fontWeight: 200}}>
+											<span 
+												style={{backgroundColor: jobTypeColor}}
+												className="highlight">{job.job_type}</span> -&nbsp; 
+											<span 
+												style={{backgroundColor: statusColor}}
+												className="highlight">{job.status}</span> - {job.first_name + " " + job.last_name}</h2>
+									</Col>
+									<Col xs={12} sm={12} md={4} lg={2}>
+										<Toggle style={{width: 'auto', float: 'right'}} label="Paid" onToggle={this.handleToggle} toggled={this.state.job.paid === 0 ? false : true}/>
+									</Col>
+								</Row>
+								<Row>
+									<Col xs={12} sm={12} md={12} lg={12}>
+										<div style={{width: '100%'}}>
+											<Slider step={0.5} value={statusValue} style={{padding: 0}} sliderStyle={{marginBottom: 0, marginTop: 8}} onChange={this.statusChange}/>
+										</div>
+									</Col>
+								</Row>
+								<Row>
+									<Col xs={12} sm={12} md={12} lg={12}>
+										<div style={{paddingTop: 20}}><p style={{margin: 0}}><span style={{color: grey500, fontStyle: 'italic'}}>Date added:</span> {job.date_added}</p></div>						
+									</Col>
+								</Row>
+								<Row>
+									<Col xs={12} sm={12} md={12} lg={12}>
+										<p style={{margin: 0, width: '100%', fontStyle: 'italic', color: grey500}}>Description</p>
+										<p style={{margin: 0}}>{job.description}</p>
+									</Col>
+								</Row>
+								<Row>
+									<Col xs={12} sm={12} md={12} lg={12}>
+										<p style={{margin: 0, width: '100%', fontStyle: 'italic', color: grey500}}>Job Items</p>
+										<TextField 
+											label="Quote Price" 
+											floatingLabelText="Quote Price" 
+											hintText="Quote Price" 
+											value={this.state.job.quote_price}
+											onChange={this.handleQuotePriceChange} />
+										<JobPartTable jobParts={this.state.jobParts} delete={this.deleteJobPart}/>
+										<AddJobPart add={this.addJobPart}/>
+									</Col>
+								</Row>
+							</Grid>	
 							</div>
-							<div style={{display: 'inline-block', float: 'right', marginTop: 30}}>
-								<Toggle label="Paid"/>
-							</div>
-						</div>
-						<div className="row">
-							<div style={{width: '100%'}}>
-								<Slider step={0.5} value={statusValue} style={{padding: 0}} onChange={this.statusChange}/>
-							</div>
-						</div>
-						<div className="row">
-							<div style={{paddingTop: 20}}><p style={{margin: 0}}><span style={{color: grey500, fontStyle: 'italic'}}>Date added:</span> {job.date_added}</p></div>						
-						</div>
-						<div className="row" style={{marginTop: 20}}>
-								<p style={{margin: 0, width: '100%', fontStyle: 'italic', color: grey500}}>Description</p>
-								<p style={{margin: 0}}>{job.description}</p>
-						</div>
-						<div className="row" style={{marginTop: 20}}>
-							<p style={{margin: 0, width: '100%', fontStyle: 'italic', color: grey500}}>Job Items</p>
-							<JobPartTable jobParts={this.state.jobParts} delete={this.deleteJobPart}/>
-							<AddJobPart add={this.addJobPart}/>
-						</div>
-						
-				
-					</div>
-
-					
-				</div>
-					
+				}
 				<div style={{position: 'fixed', bottom: 24, right: 24}}>
+					<div style={{width: '100%'}}>
+						<FloatingActionButton style={{postition: 'relative', marginBottom: 20}} backgroundColor={red500} onClick={this.deleteJob}>
+							<FontIcon className="material-icons">delete</FontIcon>
+						</FloatingActionButton>	
+					</div>
 					<div style={{width: '100%'}}>
 						<FloatingActionButton style={{postition: 'relative', marginBottom: 20}} onClick={this.handleUpdate}>
 							<FontIcon className="material-icons">save</FontIcon>

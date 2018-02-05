@@ -79,7 +79,7 @@ class AddJobPart extends React.Component {
     }
     render(){
         return(
-            <div>
+            <div className="col s12">
                 <div className="col s12 m6">
                     <PartSelect handleChange={this.handlePartSelectChange} value={this.state.value} parts={this.state.parts}/>
                 </div>

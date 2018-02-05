@@ -2,6 +2,15 @@ var express = require( 'express' )
 var router = express.Router( )
 var controllers = require('../controllers');
 
+/*OBJECTIVE
+11.0 - Write an API to allow the application to 
+interface with the server
+11.1 - The client must be able to make a request 
+to the server. The server will respond by executing 
+the relevant MySQL query and if applicable, sending 
+the returned data as JSON to the client.
+*/
+
 router.get( '/:resource', function( req, res, next ) {
   var resource = req.params.resource;
   var controller = controllers[resource];
