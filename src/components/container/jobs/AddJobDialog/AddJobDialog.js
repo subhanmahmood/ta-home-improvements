@@ -1,22 +1,21 @@
 import React from 'react';
 import superagent from 'superagent';
 
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import FontIcon from 'material-ui/FontIcon';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-
-import DatePicker from 'material-ui/DatePicker';
 import AddJobPart from './Table/AddJobPart';
 import CustomerSelect from './Select/CustomerSelect';
-import JobTypeSelect from './Select/JobTypeSelect';
+import DatePicker from 'material-ui/DatePicker';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import FontIcon from 'material-ui/FontIcon';
 import JobPartTable from './Table/JobPartTable';
+import JobTypeSelect from './Select/JobTypeSelect';
 import PartSelect from './Select/PartSelect';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 
-import appointmentHelpers from '../../appointments/helpers';
-import validationHelpers from '../../helpers/validationHelpers';
+import appointmentHelpers from '../../../../helpers/helpers';
+import validationHelpers from '../../../../helpers/validationHelpers';
 
 import styles from './styles';
 
@@ -245,6 +244,9 @@ class AddJobDialog extends React.Component {
 				currentJob.idjob = currentId;
 				this.props.addJob(currentJob)
 				this.state.jobParts.forEach((jobPart) => {
+					console.log(jobPart)
+					delete jobPart.cost_per_unit
+					delete jobPart.name
 					jobPart.idjob = currentId;
 					superagent.post('/api/jobitem')
 					.set('Content-Type', 'application/json')					

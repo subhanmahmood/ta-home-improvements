@@ -22,6 +22,7 @@ class Job extends React.Component{
 		super(props)
 		this.state = {
 			job: new Array(),
+			notFound: false,
 			jobParts: new Array(),
 			parts: new Array(),
 			snackbarOpen: false,
@@ -43,9 +44,12 @@ class Job extends React.Component{
 		.end((err, res) => {
 			if(err){
 				alert('ERROR: ' + err)
+			}else if(res.body.status === 404){
+				this.setState({notFound: true});
+			}else if(res.body.status === 200){
+				const job = res.body.response[0]
+				this.setState({job: job});
 			}
-			const job = res.body.response[0]
-			this.setState({job: job});
 		})
 
 		superagent.get(`/api/jobitem/${id}`)
@@ -101,7 +105,6 @@ class Job extends React.Component{
 			if(updatedJobParts[i].idpart === jobPart.idpart){
 				jpExists = true
 				updatedJobParts[i].quantity = parseInt(updatedJobParts[i].quantity) + parseInt(jobPart.quantity)
-				
 				const cost = part.cost_per_unit * jobPart.quantity;
 				totalCost = this.state.expenses + cost;
 			}
@@ -128,9 +131,9 @@ class Job extends React.Component{
 				let updatedJob = Object.assign({}, this.state.job);
 				updatedJob.expenses = newCost;
 				updatedJob.quote_price = newCost * 1.5;
-		
+
 				let updatedJobParts = this.state.jobParts.filter((jp) => {
-					return jp.idpart !== jobPart.idpart
+				return jp.idpart !== jobPart.idpart
 				})
 				this.setState({job: updatedJob, jobParts: updatedJobParts, snackbarMessage: 'Deleted successfully'}, this.openSnackbar);
 			}			
@@ -188,7 +191,7 @@ class Job extends React.Component{
 	}
 	render(){
 		let statusColor = grey500;
-		
+
 		const job = this.state.job;
 		let statusValue = 0
 		if(this.state.job.status === 'Ongoing'){
@@ -199,7 +202,7 @@ class Job extends React.Component{
 			statusValue = 1
 		}
 		let jobTypeColor = cyan500;
-		
+
 		switch (job.job_type) {
 			case 'Conservatory':
 				jobTypeColor = deepOrange500;
@@ -213,7 +216,7 @@ class Job extends React.Component{
 			default:
 				break;
 		}
-		
+
 		return(
 			<div>				
 				<Snackbar
@@ -221,57 +224,91 @@ class Job extends React.Component{
 					message={this.state.snackbarMessage}
 					autoHideDuration={4000}
 					onRequestClose={this.closeSnackbar}/>
-				{this.state.job.job_type === undefined ? <CircularProgress/> 
+				{this.state.job.job_type === undefined ? 
+				(this.state.notFound ? 'Job not found' : <CircularProgress/>) 
 				:
 				<div className="container" style={{marginTop: 20}}>
-							<Grid fluid>
-								<Row middle="xs">
-									<Col xs={12} sm={12} md={8} lg={10}>
-										<h2 style={{fontWeight: 200}}>
-											<span 
-												style={{backgroundColor: jobTypeColor}}
-												className="highlight">{job.job_type}</span> -&nbsp; 
-											<span 
-												style={{backgroundColor: statusColor}}
-												className="highlight">{job.status}</span> - {job.first_name + " " + job.last_name}</h2>
-									</Col>
-									<Col xs={12} sm={12} md={4} lg={2}>
-										<Toggle style={{width: 'auto', float: 'right'}} label="Paid" onToggle={this.handleToggle} toggled={this.state.job.paid === 0 ? false : true}/>
-									</Col>
-								</Row>
-								<Row>
-									<Col xs={12} sm={12} md={12} lg={12}>
-										<div style={{width: '100%'}}>
-											<Slider step={0.5} value={statusValue} style={{padding: 0}} sliderStyle={{marginBottom: 0, marginTop: 8}} onChange={this.statusChange}/>
-										</div>
-									</Col>
-								</Row>
-								<Row>
-									<Col xs={12} sm={12} md={12} lg={12}>
-										<div style={{paddingTop: 20}}><p style={{margin: 0}}><span style={{color: grey500, fontStyle: 'italic'}}>Date added:</span> {job.date_added}</p></div>						
-									</Col>
-								</Row>
-								<Row>
-									<Col xs={12} sm={12} md={12} lg={12}>
-										<p style={{margin: 0, width: '100%', fontStyle: 'italic', color: grey500}}>Description</p>
-										<p style={{margin: 0}}>{job.description}</p>
-									</Col>
-								</Row>
-								<Row>
-									<Col xs={12} sm={12} md={12} lg={12}>
-										<p style={{margin: 0, width: '100%', fontStyle: 'italic', color: grey500}}>Job Items</p>
-										<TextField 
-											label="Quote Price" 
-											floatingLabelText="Quote Price" 
-											hintText="Quote Price" 
-											value={this.state.job.quote_price}
-											onChange={this.handleQuotePriceChange} />
-										<JobPartTable jobParts={this.state.jobParts} delete={this.deleteJobPart}/>
-										<AddJobPart add={this.addJobPart}/>
-									</Col>
-								</Row>
-							</Grid>	
-							</div>
+					<Grid>
+						<Row>
+							<Col xs={12} sm={12} md={8} lg={8} mdOffset={2} lgOffset={2}>
+								<Grid fluid>
+									<Row middle="xs">
+										<Col xs={12} sm={12} md={8} lg={10}>
+											<h2 style={{fontWeight: 200}}>
+												<span 
+													style={{backgroundColor: jobTypeColor}}
+													className="highlight">
+													{job.job_type}
+												</span> -&nbsp; 
+												<span 
+													style={{backgroundColor: statusColor}}
+													className="highlight">
+													{job.status}
+												</span> - {job.first_name + " " + job.last_name}
+											</h2>
+										</Col>
+										<Col xs={12} sm={12} md={4} lg={2}>
+											<Toggle 
+												style={{width: 'auto', float: 'right'}} 
+												label="Paid" 
+												onToggle={this.handleToggle} 
+												toggled={this.state.job.paid === 0 ? false : true}/>
+										</Col>
+									</Row>
+									<Row>
+										<Col xs={12} sm={12} md={12} lg={12}>
+											<div style={{width: '100%'}}>
+												<Slider 
+													step={0.5} 
+													value={statusValue} 
+													style={{padding: 0}} 
+													sliderStyle={{marginBottom: 0, marginTop: 8}} 
+													onChange={this.statusChange}/>
+											</div>
+										</Col>
+									</Row>
+									<Row>
+										<Col xs={12} sm={12} md={12} lg={12}>
+											<div style={{paddingTop: 20}}>
+												<p style={{margin: 0}}>
+													<span style={{color: grey500, fontStyle: 'italic'}}>Date added:</span> 
+													{job.date_added}
+												</p>
+											</div>						
+										</Col>
+									</Row>
+									<Row>
+										<Col xs={12} sm={12} md={12} lg={12}>
+											<p style={{
+												margin: 0, 
+												width: '100%', 
+												fontStyle: 'italic', 
+												color: grey500}}>Description</p>
+											<p style={{margin: 0}}>{job.description}</p>
+										</Col>
+									</Row>
+									<Row>
+										<Col xs={12} sm={12} md={12} lg={12}>
+											<p style={{
+												margin: 0, 
+												width: '100%', 
+												fontStyle: 'italic', 
+												color: grey500}}>Job Items</p>
+											<TextField 
+												label="Quote Price" 
+												floatingLabelText="Quote Price" 
+												hintText="Quote Price" 
+												value={this.state.job.quote_price.toFixed(2)}
+												onChange={this.handleQuotePriceChange} />
+											<JobPartTable jobParts={this.state.jobParts} delete={this.deleteJobPart}/>
+											<AddJobPart add={this.addJobPart}/>
+										</Col>
+									</Row>
+								</Grid>
+							</Col>
+						</Row>
+					</Grid>	
+				</div>
 				}
 				<div style={{position: 'fixed', bottom: 24, right: 24}}>
 					<div style={{width: '100%'}}>
@@ -284,9 +321,9 @@ class Job extends React.Component{
 							<FontIcon className="material-icons">save</FontIcon>
 						</FloatingActionButton>	
 					</div>
-					<FloatingActionButton style={{postition: 'relative', bottom: 24}} href={`/jobs/${this.state.job.idjob}/invoice`}>
-						<FontIcon className="material-icons">receipt</FontIcon>
-					</FloatingActionButton>
+						<FloatingActionButton style={{postition: 'relative', bottom: 24}} href={`/jobs/${this.state.job.idjob}/invoice`}>
+							<FontIcon className="material-icons">receipt</FontIcon>
+						</FloatingActionButton>
 				</div>
 			</div>
 		)

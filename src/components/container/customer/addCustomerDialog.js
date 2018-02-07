@@ -1,18 +1,19 @@
 import React from 'react';
+import superagent from 'superagent';
+
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import Snackbar from 'material-ui/Snackbar';
-import FontIcon from 'material-ui/FontIcon';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import superagent from 'superagent';
+import FontIcon from 'material-ui/FontIcon';
+import RaisedButton from 'material-ui/RaisedButton';
+import Snackbar from 'material-ui/Snackbar';
+import TextField from 'material-ui/TextField';
 var faker = require('faker')
 
-import validationHelpers from '../helpers/validationHelpers';
+import validationHelpers from '../../../helpers/validationHelpers';
 
 const validationMethods = {
-	first_name: function(value){
+first_name: function(value){
 		let errors = new Array();
 		errors = {
 			presenceCheck: validationHelpers.presenceCheck(value),

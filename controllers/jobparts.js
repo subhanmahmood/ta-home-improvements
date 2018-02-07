@@ -13,7 +13,7 @@ module.exports = {
     })
   },
   find: function(req, res){
-    var query = 'SELECT * FROM tbljobtem';
+    var query = 'SELECT * FROM tbljobitem';
     connection.query(query, function(error, results, fields){
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })

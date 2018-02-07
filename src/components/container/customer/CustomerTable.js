@@ -2,27 +2,19 @@ import React from 'react';
 import superagent from 'superagent';
 
 import AppBar from 'material-ui/AppBar';
-import FlatButton from 'material-ui/FlatButton';
-import {
-    Table, 
-    TableBody,
-    TableHeader, 
-    TableHeaderColumn,
-    TableRow,
-    TableRowColumn,
-    TableFooter
-} from 'material-ui/Table';
-import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';
-import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
-import MenuItem from 'material-ui/MenuItem';
+import CircularProgress from 'material-ui/CircularProgress';
+import Dialog from 'material-ui/Dialog'
 import DropDownMenu from 'material-ui/DropDownMenu';
+import FlatButton from 'material-ui/FlatButton';
+import FontIcon from 'material-ui/FontIcon';
+import IconButton from 'material-ui/IconButton';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, TableFooter} from 'material-ui/Table';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-import Dialog from 'material-ui/Dialog'
-import CircularProgress from 'material-ui/CircularProgress';
 
 import AddCustomerDialog from './addCustomerDialog';
 

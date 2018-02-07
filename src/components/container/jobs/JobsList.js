@@ -1,21 +1,21 @@
 import React from 'react';
 import superagent from 'superagent'
 
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';
-import MenuItem from 'material-ui/MenuItem';
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-import SelectField from 'material-ui/SelectField';
 import AddJobDialog from './AddJobDialog/AddJobDialog'
 import Card from 'material-ui/Card/Card';
-import { CardTitle } from 'material-ui/Card';
 import CardActions from 'material-ui/Card/CardActions';
-import FlatButton from 'material-ui/FlatButton/FlatButton';
-import { grey500, red500, green500, cyan500, deepOrange500, brown500, purple500 } from 'material-ui/styles/colors';
 import CardText from 'material-ui/Card/CardText';
+import CardTitle from 'material-ui/Card/CardTitle';
+import FlatButton from 'material-ui/FlatButton/FlatButton';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import FontIcon from 'material-ui/FontIcon';
+import IconButton from 'material-ui/IconButton';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+import SelectField from 'material-ui/SelectField';
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 
+import { grey500, red500, green500, cyan500, deepOrange500, brown500, purple500 } from 'material-ui/styles/colors';
 import JobCard from '../../presentation/jobs/JobCard'
 
 /*

@@ -31,8 +31,7 @@ module.exports = {
         res.send({ "status": 500, "error": error, "response": null })
       }else{
         res.send({ "status": 200, "error": null, "response": results });
-      }
-   
+      }   
     })
   },
   deleteById(req, res){

@@ -2,8 +2,8 @@ import React from 'react';
 import superagent from 'superagent';
 
 import PartSelect from '../Select/PartSelect';
-import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 
 class AddJobPart extends React.Component {
     constructor(props){

@@ -17,7 +17,7 @@ import FontIcon from 'material-ui/FontIcon';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Paper from 'material-ui/Paper';
 
-import appointmentHelpers from '../../container/appointments/helpers';
+import appointmentHelpers from '../../../helpers/helpers';
 
 class Invoice extends React.Component {
 	constructor(props){

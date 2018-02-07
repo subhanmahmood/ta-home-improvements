@@ -59,7 +59,11 @@ module.exports = {
       if ( error ) {
         res.send({ "status": 500, "error": error, "response": null })
       }else{
-        res.send({ "status": 200, "error": null, "response": results });
+        if(results.length === 0 ){          
+          res.send({ "status": 404, "error": "job not found", "response": results });
+        }else{          
+          res.send({ "status": 200, "error": null, "response": results });
+        }
       }
     })
   },

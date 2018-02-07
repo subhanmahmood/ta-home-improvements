@@ -1,17 +1,9 @@
 import React from 'react';
 import superagent from 'superagent';
 
-import {
-	Table,
-	TableBody,
-	TableHeader,
-	TableHeaderColumn,
-	TableRow,
-	TableRowColumn,
-	TableFooter
-  } from 'material-ui/Table';  
 import FlatButton from 'material-ui/FlatButton';
 import { red500 } from 'material-ui/styles/colors';
+import {Table, TableBody, TableHeader, TableHeaderColumn,	TableRow,	TableRowColumn,	TableFooter} from 'material-ui/Table';  
 
 class TableItem extends React.Component {
 	constructor(props){

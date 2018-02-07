@@ -1,13 +1,14 @@
 import React from 'react';
 import superagent from 'superagent';
 
-import AddAppointment from './AddAppointment';
-import { Card, CardTitle, CardText, CardHeader } from 'material-ui/Card';
+import {Card, CardTitle, CardText, CardHeader} from 'material-ui/Card';
 import {cyan500, grey500, grey300} from 'material-ui/styles/colors';
-import RaisedButton from 'material-ui/RaisedButton';
 import Divider from 'material-ui/Divider';
+import RaisedButton from 'material-ui/RaisedButton';
 import radio from 'material-ui/svg-icons/av/radio';
-import appointmentHelpers from './helpers';
+
+import AddAppointment from './AddAppointment';
+import appointmentHelpers from '../../../helpers/helpers';
 
 class AppointmentCard extends React.Component{
     constructor(props){
@@ -107,16 +108,13 @@ class AppointmentList extends React.Component{
             pastAppointments: new Array(),
             futureAppointments: new Array()
         }
-        this.sortAllAppointments = this.sortAllAppointments.bind(this);
-        this.sortCurrentAppointments = this.sortCurrentAppointments.bind(this);
-        this.sortPastAppointments = this.sortPastAppointments.bind(this);
-        this.sortFutureAppointments = this.sortFutureAppointments.bind(this);
+        this.sortAppointments = this.sortAppointments.bind(this);
         this.updateAppointments = this.updateAppointments.bind(this);
         this.addAppointment = this.addAppointment.bind(this);
         this.getAppointments = this.getAppointments.bind(this);
         this.deleteAppointment = this.deleteAppointment.bind(this);
     }
-    componentDidMount(){
+    componentDidMount(){// [ 1, 2, 2, 3, 3, 3, 5, 6, 7, 8 ]
         this.getAppointments()
     }
     getAppointments(){
@@ -126,7 +124,8 @@ class AppointmentList extends React.Component{
                 alert('ERROR: ' + err)
             }
             const appointments = res.body.response;
-            this.setState({appointments: appointments}, this.sortAllAppointments);
+            this.setState({appointments: appointments});
+            this.sortAppointments('appointments', this.state.appointments, 'date')
             this.updateAppointments();
         })
     }
@@ -142,76 +141,27 @@ class AppointmentList extends React.Component{
         const futureAppointments = this.state.appointments.filter((apt) => {
             return apt.date > date;
         })
-        this.setState({currentAppointments: currentAppointments}, this.sortCurrentAppointments);
-        this.setState({futureAppointments: futureAppointments}, this.sortFutureAppointments);
-        this.setState({pastAppointments: pastAppointments}, this.sortPastAppointments);
+        this.setState({currentAppointments: currentAppointments}/*, this.sortAppointments('currentAppointments', this.state.currentAppointments, 'date', 'time')*/);
+        this.setState({futureAppointments: futureAppointments}/*, this.sortAppointments('futureAppointments', this.state.futureAppointments, 'date', 'time')*/);
+        this.setState({pastAppointments: pastAppointments}/*, this.sortAppointments('pastAppointments', this.state.pastAppointments, 'date', 'time')*/);
     }
-    sortAllAppointments(){
-        let updatedAppointments = Object.assign([], this.state.appointments);
-        for(let j = 0; j < this.state.appointments.length; j++){
-            for(let i = 0; i < updatedAppointments.length; i++){
-                if(i !== updatedAppointments.length - 1){
-                    const current = updatedAppointments[i];
-                    const next = updatedAppointments[i + 1];
-                    if((current.date + current.time) < (next.date + next.time)){
-                        updatedAppointments[i] = next;
-                        updatedAppointments[i + 1] = current;
-                    }
-                }
-            }
-        }
-        this.setState({appointments: updatedAppointments})
+    sortAppointments(name, arr, attr1, attr2){
+        console.log(arr)
+        const newArr = appointmentHelpers.mergeSort(arr, attr1, attr2);
+        let updatedState = Object.assign({}, this.state)
+        updatedState[name] = newArr;
+        console.log(updatedState)
+        this.setState({updatedState});
     }
-    sortFutureAppointments(){
-        let updatedAppointments = Object.assign([], this.state.futureAppointments);
-        for(let j = 0; j < this.state.appointments.length; j++){
-            for(let i = 0; i < updatedAppointments.length; i++){
-                if(i !== updatedAppointments.length - 1){
-                    const current = updatedAppointments[i];
-                    const next = updatedAppointments[i + 1];
-                    if((current.date + current.time) > (next.date + next.time)){
-                        updatedAppointments[i] = next;
-                        updatedAppointments[i + 1] = current;
-                    }
-                }
-            }
-        }
-        this.setState({futureAppointments: updatedAppointments})
-    }
-    sortCurrentAppointments(){
-        let updatedAppointments = Object.assign([], this.state.currentAppointments);
-        for(let j = 0; j < this.state.appointments.length; j++){
-            for(let i = 0; i < updatedAppointments.length; i++){
-                if(i !== updatedAppointments.length - 1){
-                    const current = updatedAppointments[i];
-                    const next = updatedAppointments[i + 1];
-                    if((current.date + current.time) > (next.date + next.time)){
-                        updatedAppointments[i] = next;
-                        updatedAppointments[i + 1] = current;
-                    }
-                }
-            }
-        }
-        this.setState({currentAppointments: updatedAppointments})
-    }
-    sortPastAppointments(){
-        let updatedAppointments = Object.assign([], this.state.pastAppointments);
-        for(let j = 0; j < this.state.appointments.length; j++){
-            for(let i = 0; i < updatedAppointments.length; i++){
-                if(i !== updatedAppointments.length - 1){
-                    const current = updatedAppointments[i];
-                    const next = updatedAppointments[i + 1];
-                    if((current.date + current.time) > (next.date + next.time)){
-                        updatedAppointments[i] = next;
-                        updatedAppointments[i + 1] = current;
-                    }
-                }
-            }
-        }
-        this.setState({pastAppointments: updatedAppointments})
+    sortAppointments(name, arr, attr1){
+        console.log(arr)
+        const newArr = appointmentHelpers.mergeSort(arr, attr1);
+        let updatedState = Object.assign({}, this.state)
+        updatedState[name] = newArr;
+        console.log(updatedState)
+        this.setState({updatedState});
     }
     addAppointment(apt){
-        console.log(apt)
         let updatedAppointments = Object.assign([], this.state.appointments);
         updatedAppointments.push(apt);
         this.setState({appointments: updatedAppointments}, this.updateAppointments);
@@ -224,6 +174,7 @@ class AppointmentList extends React.Component{
         
     }
     render(){
+        
         const CurrentAppointments = this.state.currentAppointments.map((apt, i) => {
             return(
                 <AppointmentCard appointment={apt} key={i} deleteAppointment={this.deleteAppointment} />

@@ -56,20 +56,32 @@ app.use('/api/', api);
  require('./app/config/passport/passport.js')(passport,models.user);
 
 
- //Sync Database
-  models.sequelize.sync().then(function(){
- console.log('Nice! Database looks fine')
-
- }).catch(function(err){
- console.log(err,"Something went wrong with the Database Update!")
- });
+//Sync Database
+models.sequelize.sync().then(function(){
+  console.log('Nice! Database looks fine')
+})
+.catch(function(err){
+  console.log(err,"Something went wrong with the Database Update!")
+});
 
 
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
+  // respond with html page
+  if (req.accepts('html')) {
+    res.render('index', { title: '404 Not Found', source: 'notFound' });
+    return;
+  }
+
+  // respond with json
+  if (req.accepts('json')) {
+    res.send({ error: 'Not found' });
+    return;
+  }
+
+  // default to plain-text. send()
+  res.type('txt').send('Not found');
   next(err);
 });
 

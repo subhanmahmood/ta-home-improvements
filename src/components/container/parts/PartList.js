@@ -1,12 +1,12 @@
 import React from 'react';
 import superagent from 'superagent';
+
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import { Grid, Row, Col } from 'react-flexbox-grid';
 import FlatButton from 'material-ui/FlatButton/FlatButton';
 import {red500} from 'material-ui/styles/colors'
-import Masonry from 'react-masonry-component'
 
 import AddPart from './AddPart';
-import { Grid, Row, Col } from 'react-flexbox-grid';
 
 class PartCard extends React.Component{
     constructor(props){

@@ -1,10 +1,11 @@
 import React from 'react';
 import superagent from 'superagent';
+
+import AddCustomerDialog from '../customer/addCustomerDialog';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton/FlatButton';
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-import AddCustomerDialog from '../customer/addCustomerDialog';
 import RaisedButton from 'material-ui/RaisedButton/RaisedButton';
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 
 import TextField from 'material-ui/TextField/TextField';
 class CustomerCard extends React.Component{

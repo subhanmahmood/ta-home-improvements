@@ -2,13 +2,14 @@ import React from 'react';
 import superagent from 'superagent';
 import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
-import appointmentHelpers from '../../container/appointments/helpers';
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 import {AppointmentCard} from '../../container/appointments/AppointmentList';
 import { grey500, red500, green500, cyan500, deepOrange500, brown500, purple500, grey300 } from 'material-ui/styles/colors';
 import FinanceObject from '../../container/finance/financeObj';
 import JobCard from '../../presentation/jobs/JobCard'
 
+
+import appointmentHelpers from '../../../helpers/helpers';
 
 /*
 OBJECTIVE 

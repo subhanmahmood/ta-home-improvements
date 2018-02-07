@@ -1,16 +1,17 @@
 import React from 'react';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import Snackbar from 'material-ui/Snackbar';
-import FontIcon from 'material-ui/FontIcon';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
 import superagent from 'superagent';
 
-import validationHelpers from '../helpers/validationHelpers';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import FontIcon from 'material-ui/FontIcon';
+import MenuItem from 'material-ui/MenuItem';
+import RaisedButton from 'material-ui/RaisedButton';
+import SelectField from 'material-ui/SelectField';
+import Snackbar from 'material-ui/Snackbar';
+import TextField from 'material-ui/TextField';
+
+import validationHelpers from '.././../../helpers/helpers';
 
 const validationMethods = {
     name: function(value){        

@@ -13,7 +13,8 @@ module.exports = {
     finances: './src/finances.js',
     invoice: './src/invoice.js',
     signin: './src/signin.js',
-    signup: './src/signup.js'
+    signup: './src/signup.js',
+    notFound: './src/404.js'
   },
   output: {
     filename: 'public/build/[name].bundle.js',
