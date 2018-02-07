@@ -9,7 +9,7 @@ import FinanceObject from '../../container/finance/financeObj';
 import JobCard from '../../presentation/jobs/JobCard'
 
 
-import appointmentHelpers from '../../../helpers/helpers';
+import helpers from '../../../helpers/helpers';
 
 /*
 OBJECTIVE 
@@ -45,7 +45,7 @@ class Dashboard extends React.Component {
 		}
 	}
 	componentDidMount(){		
-		const date = appointmentHelpers.date();
+		const date = helpers.date();
 
 		superagent.get('/api/job?status=Ongoing')
 		.end((err, res) => {

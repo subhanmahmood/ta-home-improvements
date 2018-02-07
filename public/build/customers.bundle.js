@@ -39390,7 +39390,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
-var _Dialog = __webpack_require__(497);
+var _Dialog = __webpack_require__(498);
 
 var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -43408,7 +43408,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
-var _Checkbox = __webpack_require__(507);
+var _Checkbox = __webpack_require__(508);
 
 var _Checkbox2 = _interopRequireDefault(_Checkbox);
 
@@ -45843,19 +45843,19 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = exports.TableRowColumn = exports.TableRow = exports.TableHeaderColumn = exports.TableHeader = exports.TableFooter = exports.TableBody = exports.Table = undefined;
 
-var _Table2 = __webpack_require__(505);
+var _Table2 = __webpack_require__(506);
 
 var _Table3 = _interopRequireDefault(_Table2);
 
-var _TableBody2 = __webpack_require__(506);
+var _TableBody2 = __webpack_require__(507);
 
 var _TableBody3 = _interopRequireDefault(_TableBody2);
 
-var _TableFooter2 = __webpack_require__(510);
+var _TableFooter2 = __webpack_require__(511);
 
 var _TableFooter3 = _interopRequireDefault(_TableFooter2);
 
-var _TableHeader2 = __webpack_require__(511);
+var _TableHeader2 = __webpack_require__(512);
 
 var _TableHeader3 = _interopRequireDefault(_TableHeader2);
 
@@ -45863,7 +45863,7 @@ var _TableHeaderColumn2 = __webpack_require__(445);
 
 var _TableHeaderColumn3 = _interopRequireDefault(_TableHeaderColumn2);
 
-var _TableRow2 = __webpack_require__(512);
+var _TableRow2 = __webpack_require__(513);
 
 var _TableRow3 = _interopRequireDefault(_TableRow2);
 
@@ -46291,6 +46291,108 @@ exports.default = FloatingActionButton;
 
 /***/ }),
 /* 479 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var helpers = {
+	date: function date() {
+		var today = new Date();
+		var d = today.getDate();
+		var m = today.getMonth();
+		if (d < 10) {
+			d = ('0' + d).slice(-2);
+		}
+		if (m + 1 < 10) {
+			m = ('0' + (m + 1)).slice(-2);
+		}
+		var date = today.getFullYear() + "-" + m + "-" + d;
+		return date;
+	},
+	newDate: function newDate() {
+		var today = new Date(+new Date() + 12096e5);
+		var d = today.getDate();
+		var m = today.getMonth();
+		if (d < 10) {
+			d = ('0' + d).slice(-2);
+		}
+		if (m + 1 < 10) {
+			m = ('0' + (m + 1)).slice(-2);
+		}
+		var date = today.getFullYear() + "-" + m + "-" + d;
+		return date;
+	},
+	mergeSort: function mergeSort(arr, type, options) {
+		function mSort(arr) {
+			if (arr.length > 0) {
+				if (arr.length === 1) {
+					return arr;
+				}
+
+				var middle = Math.floor(arr.length / 2);
+				var left = arr.slice(0, middle);
+				var right = arr.slice(middle);
+
+				return mergeArrays(mSort(left), mSort(right));
+			}
+		}
+		function mergeArrays(left, right) {
+			var result = [];
+			var indexLeft = 0;
+			var indexRight = 0;
+
+			var _loop = function _loop() {
+				var leftItem1 = '';
+				var rightItem1 = '';
+				options.forEach(function (option) {
+					leftItem1 = leftItem1 + left[indexLeft][option] + " ";
+					rightItem1 = rightItem1 + right[indexRight][option] + " ";
+				});
+				if (type === 'asc') {
+					if (leftItem1 < rightItem1) {
+						result.push(left[indexLeft]);
+						indexLeft++;
+					} else {
+						result.push(right[indexRight]);
+						indexRight++;
+					}
+				} else if (type === 'desc') {
+					if (leftItem1 > rightItem1) {
+						result.push(left[indexLeft]);
+						indexLeft++;
+					} else {
+						result.push(right[indexRight]);
+						indexRight++;
+					}
+				}
+			};
+
+			while (indexLeft < left.length && indexRight < right.length) {
+				_loop();
+			}
+			return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight));
+		}
+		return mSort(arr);
+	},
+
+	size: function size(obj) {
+		var size = 0,
+		    key;
+		for (key in obj) {
+			if (obj.hasOwnProperty(key)) size++;
+		}
+		return size;
+	}
+};
+
+exports.default = helpers;
+
+/***/ }),
+/* 480 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46761,7 +46863,6 @@ exports.default = EnhancedSwitch;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 480 */,
 /* 481 */,
 /* 482 */,
 /* 483 */,
@@ -46778,7 +46879,8 @@ exports.default = EnhancedSwitch;
 /* 494 */,
 /* 495 */,
 /* 496 */,
-/* 497 */
+/* 497 */,
+/* 498 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47392,8 +47494,8 @@ exports.default = Dialog;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 498 */,
-/* 499 */
+/* 499 */,
+/* 500 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47404,7 +47506,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = exports.MenuItem = exports.DropDownMenu = undefined;
 
-var _DropDownMenu2 = __webpack_require__(500);
+var _DropDownMenu2 = __webpack_require__(501);
 
 var _DropDownMenu3 = _interopRequireDefault(_DropDownMenu2);
 
@@ -47419,7 +47521,7 @@ exports.MenuItem = _MenuItem3.default;
 exports.default = _DropDownMenu3.default;
 
 /***/ }),
-/* 500 */
+/* 501 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47477,7 +47579,7 @@ var _transitions = __webpack_require__(16);
 
 var _transitions2 = _interopRequireDefault(_transitions);
 
-var _arrowDropDown = __webpack_require__(501);
+var _arrowDropDown = __webpack_require__(502);
 
 var _arrowDropDown2 = _interopRequireDefault(_arrowDropDown);
 
@@ -47485,7 +47587,7 @@ var _Menu = __webpack_require__(196);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
-var _ClearFix = __webpack_require__(502);
+var _ClearFix = __webpack_require__(503);
 
 var _ClearFix2 = _interopRequireDefault(_ClearFix);
 
@@ -48018,7 +48120,7 @@ exports.default = DropDownMenu;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 501 */
+/* 502 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48056,7 +48158,7 @@ NavigationArrowDropDown.muiName = 'SvgIcon';
 exports.default = NavigationArrowDropDown;
 
 /***/ }),
-/* 502 */
+/* 503 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48082,7 +48184,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _BeforeAfterWrapper = __webpack_require__(503);
+var _BeforeAfterWrapper = __webpack_require__(504);
 
 var _BeforeAfterWrapper2 = _interopRequireDefault(_BeforeAfterWrapper);
 
@@ -48129,7 +48231,7 @@ exports.default = ClearFix;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 503 */
+/* 504 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48290,8 +48392,8 @@ exports.default = BeforeAfterWrapper;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 504 */,
-/* 505 */
+/* 505 */,
+/* 506 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48674,7 +48776,7 @@ exports.default = Table;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 506 */
+/* 507 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49222,7 +49324,7 @@ exports.default = TableBody;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 507 */
+/* 508 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49272,7 +49374,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _EnhancedSwitch = __webpack_require__(479);
+var _EnhancedSwitch = __webpack_require__(480);
 
 var _EnhancedSwitch2 = _interopRequireDefault(_EnhancedSwitch);
 
@@ -49280,11 +49382,11 @@ var _transitions = __webpack_require__(16);
 
 var _transitions2 = _interopRequireDefault(_transitions);
 
-var _checkBoxOutlineBlank = __webpack_require__(508);
+var _checkBoxOutlineBlank = __webpack_require__(509);
 
 var _checkBoxOutlineBlank2 = _interopRequireDefault(_checkBoxOutlineBlank);
 
-var _checkBox = __webpack_require__(509);
+var _checkBox = __webpack_require__(510);
 
 var _checkBox2 = _interopRequireDefault(_checkBox);
 
@@ -49523,7 +49625,7 @@ exports.default = Checkbox;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 508 */
+/* 509 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49561,7 +49663,7 @@ ToggleCheckBoxOutlineBlank.muiName = 'SvgIcon';
 exports.default = ToggleCheckBoxOutlineBlank;
 
 /***/ }),
-/* 509 */
+/* 510 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49599,7 +49701,7 @@ ToggleCheckBox.muiName = 'SvgIcon';
 exports.default = ToggleCheckBox;
 
 /***/ }),
-/* 510 */
+/* 511 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49760,7 +49862,7 @@ exports.default = TableFooter;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 511 */
+/* 512 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50025,7 +50127,7 @@ exports.default = TableHeader;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 512 */
+/* 513 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50315,7 +50417,6 @@ exports.default = TableRow;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 513 */,
 /* 514 */,
 /* 515 */,
 /* 516 */,
@@ -53672,7 +53773,7 @@ var _Dialog = __webpack_require__(414);
 
 var _Dialog2 = _interopRequireDefault(_Dialog);
 
-var _DropDownMenu = __webpack_require__(499);
+var _DropDownMenu = __webpack_require__(500);
 
 var _DropDownMenu2 = _interopRequireDefault(_DropDownMenu);
 
@@ -53715,6 +53816,10 @@ var _Toolbar = __webpack_require__(708);
 var _addCustomerDialog = __webpack_require__(1023);
 
 var _addCustomerDialog2 = _interopRequireDefault(_addCustomerDialog);
+
+var _helpers = __webpack_require__(479);
+
+var _helpers2 = _interopRequireDefault(_helpers);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -53827,32 +53932,12 @@ var CustomersTable = function (_React$Component) {
             var customers = this.state.customers;
             //Sort ascending
             if (this.state.valueSort === 1) {
-                for (var i = 0; i < customers.length - 1; i++) {
-                    for (var j = 0; j < customers.length - 1; j++) {
-                        var currentCustomer = customers[j];
-                        var nextCustomer = customers[j + 1];
-                        var nameCurrent = currentCustomer.first_name + " " + currentCustomer.last_name;
-                        var nameNext = nextCustomer.first_name + " " + nextCustomer.last_name;
-                        if (nameCurrent > nameNext) {
-                            customers[j] = nextCustomer;
-                            customers[j + 1] = currentCustomer;
-                        }
-                    }
-                }
+                var newCustomers = _helpers2.default.mergeSort(customers, 'asc', ['first_name', 'last_name']);
+                this.setState({ customers: newCustomers });
             } else if (this.state.valueSort === 2) {
                 //Sort descending
-                for (var _i = 0; _i < customers.length - 1; _i++) {
-                    for (var _j = 0; _j < customers.length - 1; _j++) {
-                        var _currentCustomer = customers[_j];
-                        var _nextCustomer = customers[_j + 1];
-                        var _nameCurrent = _currentCustomer.first_name + " " + _currentCustomer.last_name;
-                        var _nameNext = _nextCustomer.first_name + " " + _nextCustomer.last_name;
-                        if (_nameCurrent < _nameNext) {
-                            customers[_j] = _nextCustomer;
-                            customers[_j + 1] = _currentCustomer;
-                        }
-                    }
-                }
+                var _newCustomers = _helpers2.default.mergeSort(customers, 'desc', ['first_name', 'last_name']);
+                this.setState({ customers: _newCustomers });
             }
             this.setState({ listCustomers: customers });
         }

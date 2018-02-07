@@ -11,7 +11,7 @@ import SelectField from 'material-ui/SelectField/SelectField';
 import Snackbar from 'material-ui/Snackbar';
 import TimePicker from 'material-ui/TimePicker';
 
-import appointmentHelpers from '../../../helpers/helpers.js'
+import helpers from '../../../helpers/helpers.js'
 
 /*
 OBJECTIVE
@@ -117,7 +117,7 @@ class AddAppointment extends React.Component{
 		this.setState({appointment: updatedAppointment});
 	}
 	handleSubmit(){
-		let date = appointmentHelpers.date()
+		let date = helpers.date()
 		let clashExists = false;
 		const appointment = this.state.appointment;
 		const appointments = this.state.appointments;

@@ -29,6 +29,7 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-flexbox-grid": "^2.0.0",
+    "react-json-view": "^1.16.0",
     "recharts": "^1.0.0-beta.1",
     "sequelize": "^4.31.2",
     "serve-favicon": "^2.4.4",

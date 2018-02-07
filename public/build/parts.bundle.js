@@ -39390,7 +39390,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
-var _Dialog = __webpack_require__(497);
+var _Dialog = __webpack_require__(498);
 
 var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -43408,7 +43408,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
-var _Checkbox = __webpack_require__(507);
+var _Checkbox = __webpack_require__(508);
 
 var _Checkbox2 = _interopRequireDefault(_Checkbox);
 
@@ -45889,19 +45889,19 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = exports.TableRowColumn = exports.TableRow = exports.TableHeaderColumn = exports.TableHeader = exports.TableFooter = exports.TableBody = exports.Table = undefined;
 
-var _Table2 = __webpack_require__(505);
+var _Table2 = __webpack_require__(506);
 
 var _Table3 = _interopRequireDefault(_Table2);
 
-var _TableBody2 = __webpack_require__(506);
+var _TableBody2 = __webpack_require__(507);
 
 var _TableBody3 = _interopRequireDefault(_TableBody2);
 
-var _TableFooter2 = __webpack_require__(510);
+var _TableFooter2 = __webpack_require__(511);
 
 var _TableFooter3 = _interopRequireDefault(_TableFooter2);
 
-var _TableHeader2 = __webpack_require__(511);
+var _TableHeader2 = __webpack_require__(512);
 
 var _TableHeader3 = _interopRequireDefault(_TableHeader2);
 
@@ -45909,7 +45909,7 @@ var _TableHeaderColumn2 = __webpack_require__(445);
 
 var _TableHeaderColumn3 = _interopRequireDefault(_TableHeaderColumn2);
 
-var _TableRow2 = __webpack_require__(512);
+var _TableRow2 = __webpack_require__(513);
 
 var _TableRow3 = _interopRequireDefault(_TableRow2);
 
@@ -46337,6 +46337,108 @@ exports.default = FloatingActionButton;
 
 /***/ }),
 /* 479 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var helpers = {
+	date: function date() {
+		var today = new Date();
+		var d = today.getDate();
+		var m = today.getMonth();
+		if (d < 10) {
+			d = ('0' + d).slice(-2);
+		}
+		if (m + 1 < 10) {
+			m = ('0' + (m + 1)).slice(-2);
+		}
+		var date = today.getFullYear() + "-" + m + "-" + d;
+		return date;
+	},
+	newDate: function newDate() {
+		var today = new Date(+new Date() + 12096e5);
+		var d = today.getDate();
+		var m = today.getMonth();
+		if (d < 10) {
+			d = ('0' + d).slice(-2);
+		}
+		if (m + 1 < 10) {
+			m = ('0' + (m + 1)).slice(-2);
+		}
+		var date = today.getFullYear() + "-" + m + "-" + d;
+		return date;
+	},
+	mergeSort: function mergeSort(arr, type, options) {
+		function mSort(arr) {
+			if (arr.length > 0) {
+				if (arr.length === 1) {
+					return arr;
+				}
+
+				var middle = Math.floor(arr.length / 2);
+				var left = arr.slice(0, middle);
+				var right = arr.slice(middle);
+
+				return mergeArrays(mSort(left), mSort(right));
+			}
+		}
+		function mergeArrays(left, right) {
+			var result = [];
+			var indexLeft = 0;
+			var indexRight = 0;
+
+			var _loop = function _loop() {
+				var leftItem1 = '';
+				var rightItem1 = '';
+				options.forEach(function (option) {
+					leftItem1 = leftItem1 + left[indexLeft][option] + " ";
+					rightItem1 = rightItem1 + right[indexRight][option] + " ";
+				});
+				if (type === 'asc') {
+					if (leftItem1 < rightItem1) {
+						result.push(left[indexLeft]);
+						indexLeft++;
+					} else {
+						result.push(right[indexRight]);
+						indexRight++;
+					}
+				} else if (type === 'desc') {
+					if (leftItem1 > rightItem1) {
+						result.push(left[indexLeft]);
+						indexLeft++;
+					} else {
+						result.push(right[indexRight]);
+						indexRight++;
+					}
+				}
+			};
+
+			while (indexLeft < left.length && indexRight < right.length) {
+				_loop();
+			}
+			return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight));
+		}
+		return mSort(arr);
+	},
+
+	size: function size(obj) {
+		var size = 0,
+		    key;
+		for (key in obj) {
+			if (obj.hasOwnProperty(key)) size++;
+		}
+		return size;
+	}
+};
+
+exports.default = helpers;
+
+/***/ }),
+/* 480 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46807,7 +46909,6 @@ exports.default = EnhancedSwitch;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 480 */,
 /* 481 */,
 /* 482 */,
 /* 483 */,
@@ -46824,7 +46925,8 @@ exports.default = EnhancedSwitch;
 /* 494 */,
 /* 495 */,
 /* 496 */,
-/* 497 */
+/* 497 */,
+/* 498 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47438,7 +47540,7 @@ exports.default = Dialog;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 498 */
+/* 499 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47492,7 +47594,7 @@ var _TextField = __webpack_require__(190);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
-var _DropDownMenu = __webpack_require__(499);
+var _DropDownMenu = __webpack_require__(500);
 
 var _DropDownMenu2 = _interopRequireDefault(_DropDownMenu);
 
@@ -47766,7 +47868,7 @@ exports.default = SelectField;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 499 */
+/* 500 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47777,7 +47879,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = exports.MenuItem = exports.DropDownMenu = undefined;
 
-var _DropDownMenu2 = __webpack_require__(500);
+var _DropDownMenu2 = __webpack_require__(501);
 
 var _DropDownMenu3 = _interopRequireDefault(_DropDownMenu2);
 
@@ -47792,7 +47894,7 @@ exports.MenuItem = _MenuItem3.default;
 exports.default = _DropDownMenu3.default;
 
 /***/ }),
-/* 500 */
+/* 501 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47850,7 +47952,7 @@ var _transitions = __webpack_require__(16);
 
 var _transitions2 = _interopRequireDefault(_transitions);
 
-var _arrowDropDown = __webpack_require__(501);
+var _arrowDropDown = __webpack_require__(502);
 
 var _arrowDropDown2 = _interopRequireDefault(_arrowDropDown);
 
@@ -47858,7 +47960,7 @@ var _Menu = __webpack_require__(196);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
-var _ClearFix = __webpack_require__(502);
+var _ClearFix = __webpack_require__(503);
 
 var _ClearFix2 = _interopRequireDefault(_ClearFix);
 
@@ -48391,7 +48493,7 @@ exports.default = DropDownMenu;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 501 */
+/* 502 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48429,7 +48531,7 @@ NavigationArrowDropDown.muiName = 'SvgIcon';
 exports.default = NavigationArrowDropDown;
 
 /***/ }),
-/* 502 */
+/* 503 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48455,7 +48557,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _BeforeAfterWrapper = __webpack_require__(503);
+var _BeforeAfterWrapper = __webpack_require__(504);
 
 var _BeforeAfterWrapper2 = _interopRequireDefault(_BeforeAfterWrapper);
 
@@ -48502,7 +48604,7 @@ exports.default = ClearFix;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 503 */
+/* 504 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48663,8 +48765,8 @@ exports.default = BeforeAfterWrapper;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 504 */,
-/* 505 */
+/* 505 */,
+/* 506 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49047,7 +49149,7 @@ exports.default = Table;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 506 */
+/* 507 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49595,7 +49697,7 @@ exports.default = TableBody;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 507 */
+/* 508 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49645,7 +49747,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _EnhancedSwitch = __webpack_require__(479);
+var _EnhancedSwitch = __webpack_require__(480);
 
 var _EnhancedSwitch2 = _interopRequireDefault(_EnhancedSwitch);
 
@@ -49653,11 +49755,11 @@ var _transitions = __webpack_require__(16);
 
 var _transitions2 = _interopRequireDefault(_transitions);
 
-var _checkBoxOutlineBlank = __webpack_require__(508);
+var _checkBoxOutlineBlank = __webpack_require__(509);
 
 var _checkBoxOutlineBlank2 = _interopRequireDefault(_checkBoxOutlineBlank);
 
-var _checkBox = __webpack_require__(509);
+var _checkBox = __webpack_require__(510);
 
 var _checkBox2 = _interopRequireDefault(_checkBox);
 
@@ -49896,7 +49998,7 @@ exports.default = Checkbox;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 508 */
+/* 509 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49934,7 +50036,7 @@ ToggleCheckBoxOutlineBlank.muiName = 'SvgIcon';
 exports.default = ToggleCheckBoxOutlineBlank;
 
 /***/ }),
-/* 509 */
+/* 510 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49972,7 +50074,7 @@ ToggleCheckBox.muiName = 'SvgIcon';
 exports.default = ToggleCheckBox;
 
 /***/ }),
-/* 510 */
+/* 511 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50133,7 +50235,7 @@ exports.default = TableFooter;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 511 */
+/* 512 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50398,7 +50500,7 @@ exports.default = TableHeader;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 512 */
+/* 513 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50688,7 +50790,7 @@ exports.default = TableRow;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 513 */
+/* 514 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50707,130 +50809,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var ColumnSizeType = exports.ColumnSizeType = _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.bool]);
 var ViewportSizeType = exports.ViewportSizeType = _propTypes2.default.oneOf(['xs', 'sm', 'md', 'lg', 'xl']);
-
-/***/ }),
-/* 514 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _appointmentHelpers;
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var appointmentHelpers = (_appointmentHelpers = {
-	date: function date() {
-		var today = new Date();
-		var d = today.getDate();
-		var m = today.getMonth();
-		if (d < 10) {
-			d = ('0' + d).slice(-2);
-		}
-		if (m + 1 < 10) {
-			m = ('0' + (m + 1)).slice(-2);
-		}
-		var date = today.getFullYear() + "-" + m + "-" + d;
-		return date;
-	},
-	newDate: function newDate() {
-		var today = new Date(+new Date() + 12096e5);
-		var d = today.getDate();
-		var m = today.getMonth();
-		if (d < 10) {
-			d = ('0' + d).slice(-2);
-		}
-		if (m + 1 < 10) {
-			m = ('0' + (m + 1)).slice(-2);
-		}
-		var date = today.getFullYear() + "-" + m + "-" + d;
-		return date;
-	},
-	mergeSort: function (_mergeSort) {
-		function mergeSort(_x, _x2) {
-			return _mergeSort.apply(this, arguments);
-		}
-
-		mergeSort.toString = function () {
-			return _mergeSort.toString();
-		};
-
-		return mergeSort;
-	}(function (arr, attr) {
-		console.log("mergeSort1	");
-		if (arr.length > 0) {
-			if (arr.length === 1) {
-				// return once we hit an array with a single item
-				return arr;
-			}
-
-			var middle = Math.floor(arr.length / 2); // get the middle item of the array rounded down
-			var left = arr.slice(0, middle); // items on the left side
-			var right = arr.slice(middle); // items on the right side
-
-			return merge(mergeSort(left), mergeSort(right), attr);
-		}
-	})
-}, _defineProperty(_appointmentHelpers, 'mergeSort', function mergeSort(arr, attr1, attr2) {
-	console.log("mergeSort2");
-	if (arr.length > 0) {
-		console.log("array not empty");
-		if (arr.length === 1) {
-			// return once we hit an array with a single item
-			return arr;
-		}
-
-		var middle = Math.floor(arr.length / 2); // get the middle item of the array rounded down
-		var left = arr.slice(0, middle); // items on the left side
-		var right = arr.slice(middle); // items on the right side
-
-		return appointmentHelpers.merge(appointmentHelpers.mergeSort(left), appointmentHelpers.mergeSort(right), attr1, attr2);
-	} else {
-		console.log("array empty");
-	}
-}), _defineProperty(_appointmentHelpers, 'merge', function merge(left, right, attr) {
-	console.log("merge1");
-	var result = [];
-	var indexLeft = 0;
-	var indexRight = 0;
-
-	while (indexLeft < left.length && indexRight < right.length) {
-		if (left[indexLeft][atr] < right[indexRight][atr]) {
-			result.push(left[indexLeft]);
-			indexLeft++;
-		} else {
-			result.push(right[indexRight]);
-			indexRight++;
-		}
-	}
-	console.log(result);
-
-	return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight));
-}), _defineProperty(_appointmentHelpers, 'merge', function merge(left, right, attr1, attr2) {
-	console.log("merge2");
-	var result = [];
-	var indexLeft = 0;
-	var indexRight = 0;
-
-	while (indexLeft < left.length && indexRight < right.length) {
-		if (left[indexLeft][attr1] + " " + left[indexLeft][attr2] < right[indexRight][attr1] + " " + right[indexRight][attr2]) {
-			result.push(left[indexLeft]);
-			indexLeft++;
-		} else {
-			result.push(right[indexRight]);
-			indexRight++;
-		}
-	}
-	console.log(result);
-
-	return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight));
-}), _appointmentHelpers);
-
-exports.default = appointmentHelpers;
 
 /***/ }),
 /* 515 */,
@@ -51533,7 +51511,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
-var _SelectField = __webpack_require__(498);
+var _SelectField = __webpack_require__(499);
 
 var _SelectField2 = _interopRequireDefault(_SelectField);
 
@@ -51656,7 +51634,7 @@ var _createProps = __webpack_require__(466);
 
 var _createProps2 = _interopRequireDefault(_createProps);
 
-var _types = __webpack_require__(513);
+var _types = __webpack_require__(514);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -52357,7 +52335,7 @@ var _classNames = __webpack_require__(465);
 
 var _classNames2 = _interopRequireDefault(_classNames);
 
-var _types = __webpack_require__(513);
+var _types = __webpack_require__(514);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -54815,7 +54793,7 @@ var _TextField = __webpack_require__(190);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
-var _helpers = __webpack_require__(514);
+var _helpers = __webpack_require__(479);
 
 var _helpers2 = _interopRequireDefault(_helpers);
 

@@ -17,7 +17,7 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 
 import AddCustomerDialog from './addCustomerDialog';
-
+import helpers from '../../../helpers/helpers'
 /*
 OBJECTIVE
 6.0 - Display a list of all the customers 
@@ -97,32 +97,12 @@ class CustomersTable extends React.Component {
         let customers = this.state.customers;
         //Sort ascending
         if(this.state.valueSort === 1){
-            for(let i = 0; i < customers.length - 1; i++){
-                for(let j = 0; j < customers.length - 1; j++){
-                    const currentCustomer = customers[j]
-                    const nextCustomer = customers[j + 1];
-                    const nameCurrent = currentCustomer.first_name + " " + currentCustomer.last_name;
-                    const nameNext = nextCustomer.first_name + " " + nextCustomer.last_name;
-                    if(nameCurrent > nameNext){
-                        customers[j] = nextCustomer;
-                        customers[j + 1] = currentCustomer;
-                    }
-                }
-            }
+            const newCustomers = helpers.mergeSort(customers, 'asc', ['first_name', 'last_name'])
+            this.setState({customers: newCustomers});
         }else if(this.state.valueSort === 2){
             //Sort descending
-            for(let i = 0; i < customers.length - 1; i++){
-                for(let j = 0; j < customers.length - 1; j++){
-                    const currentCustomer = customers[j]
-                    const nextCustomer = customers[j + 1];
-                    const nameCurrent = currentCustomer.first_name + " " + currentCustomer.last_name;
-                    const nameNext = nextCustomer.first_name + " " + nextCustomer.last_name;
-                    if(nameCurrent < nameNext){
-                        customers[j] = nextCustomer;
-                        customers[j + 1] = currentCustomer;
-                    }
-                }
-            }
+            const newCustomers = helpers.mergeSort(customers, 'desc', ['first_name', 'last_name'])
+            this.setState({customers: newCustomers});
         }
         this.setState({listCustomers: customers})
     }

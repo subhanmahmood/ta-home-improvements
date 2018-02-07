@@ -1,4 +1,4 @@
-const appointmentHelpers = {
+const helpers = {
 	date: function(){
 		const today = new Date();
 		let d = today.getDate();
@@ -25,86 +25,63 @@ const appointmentHelpers = {
 		const date = today.getFullYear() + "-" + (m) + "-" + d;
 		return date
 	},
-	mergeSort (arr, attr) {
-		console.log("mergeSort1	")
-		if(arr.length > 0){
-			if (arr.length === 1) {
-			// return once we hit an array with a single item
-				return arr
-			}
-
-			const middle = Math.floor(arr.length / 2) // get the middle item of the array rounded down
-			const left = arr.slice(0, middle) // items on the left side
-			const right = arr.slice(middle) // items on the right side
-
-			return merge(
-				mergeSort(left),
-				mergeSort(right),
-				attr
-			)
-		}
-	},
-	mergeSort (arr, attr1, attr2) {
-		console.log("mergeSort2")
-		if(arr.length > 0){
-			console.log("array not empty")
-			if (arr.length === 1) {
-			// return once we hit an array with a single item
-				return arr
-			}
-
-			const middle = Math.floor(arr.length / 2) // get the middle item of the array rounded down
-			const left = arr.slice(0, middle) // items on the left side
-			const right = arr.slice(middle) // items on the right side
-
-			return appointmentHelpers.merge(
-				appointmentHelpers.mergeSort(left),
-				appointmentHelpers.mergeSort(right),
-				attr1,
-				attr2
-			)
-		}else{
-			console.log("array empty")
-		}
-	},
-	merge (left, right, attr) {
-		console.log("merge1")
-		let result = []
-		let indexLeft = 0
-		let indexRight = 0
-
-		while (indexLeft < left.length && indexRight < right.length) {
-			if (left[indexLeft][atr] < right[indexRight][atr]) {
-				result.push(left[indexLeft])
-				indexLeft++
-			} else {
-				result.push(right[indexRight])
-				indexRight++
+	mergeSort(arr, type, options){
+		function mSort (arr) {
+			if(arr.length > 0){
+				if (arr.length === 1) {
+					return arr
+				}
+				const middle = Math.floor(arr.length / 2) 
+				const left = arr.slice(0, middle)
+				const right = arr.slice(middle)		
+				return mergeArrays(
+					mSort(left),
+					mSort(right)
+				)
 			}
 		}
-		console.log(result)
-
-		return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight))
+		function mergeArrays (left, right) {
+			let result = []
+			let indexLeft = 0
+			let indexRight = 0
+						
+			while (indexLeft < left.length && indexRight < right.length) {
+				let leftItem1 = ''
+				let rightItem1 = ''
+				options.forEach(option => {
+					leftItem1 = leftItem1 + left[indexLeft][option] + " "
+					rightItem1 = rightItem1 + right[indexRight][option] + " "
+				});
+				if(type === 'asc'){
+					if (leftItem1 < rightItem1) {
+						result.push(left[indexLeft])
+						indexLeft++
+					} else {
+						result.push(right[indexRight])
+						indexRight++
+					}
+				}else if(type === 'desc'){
+					if (leftItem1 > rightItem1) {
+						result.push(left[indexLeft])
+						indexLeft++
+					} else {
+						result.push(right[indexRight])
+						indexRight++
+					}
+				}
+				
+			} 	
+			return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight))
+		}
+		return mSort(arr)
 	},
-	merge (left, right, attr1, attr2) {
-		console.log("merge2")
-		let result = []
-		let indexLeft = 0
-		let indexRight = 0
-
-		while (indexLeft < left.length && indexRight < right.length) {
-			if ((left[indexLeft][attr1] + " " + left[indexLeft][attr2]) < (right[indexRight][attr1] + " " + right[indexRight][attr2])) {
-				result.push(left[indexLeft])
-				indexLeft++
-			} else {
-				result.push(right[indexRight])
-				indexRight++
+	size: function(obj){
+		var size = 0, key;
+			for (key in obj) {
+				if (obj.hasOwnProperty(key)) size++;
 			}
-		} 
-		console.log(result)
-
-		return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight))
+			return size;
 	}
 }
 
-export default appointmentHelpers
+export default helpers

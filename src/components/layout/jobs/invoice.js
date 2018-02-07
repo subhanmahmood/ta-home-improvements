@@ -17,7 +17,7 @@ import FontIcon from 'material-ui/FontIcon';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Paper from 'material-ui/Paper';
 
-import appointmentHelpers from '../../../helpers/helpers';
+import helpers from '../../../helpers/helpers';
 
 class Invoice extends React.Component {
 	constructor(props){
@@ -70,8 +70,8 @@ class Invoice extends React.Component {
 	}
 	render(){
 		const job = this.state.job;
-		const td = appointmentHelpers.date();
-		const dd = appointmentHelpers.newDate();
+		const td = helpers.date();
+		const dd = helpers.newDate();
 		const rows = this.state.jobParts.map((jp, i) => {
 			return (
 				<TableRow>

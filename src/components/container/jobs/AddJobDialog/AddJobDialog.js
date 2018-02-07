@@ -14,7 +14,7 @@ import PartSelect from './Select/PartSelect';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-import appointmentHelpers from '../../../../helpers/helpers';
+import helpers from '../../../../helpers/helpers';
 import validationHelpers from '../../../../helpers/validationHelpers';
 
 import styles from './styles';
@@ -227,7 +227,7 @@ class AddJobDialog extends React.Component {
 		});
 	}
 	handleSubmit(){
-		const date = appointmentHelpers.date();
+		const date = helpers.date();
 		const job = this.state.job;
 		job.expenses = this.state.expenses.toFixed(2) ;
 		job.quote_price = (job.expenses * 1.5).toFixed(2);

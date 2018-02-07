@@ -6,9 +6,10 @@ import {cyan500, grey500, grey300} from 'material-ui/styles/colors';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import radio from 'material-ui/svg-icons/av/radio';
+import ReactJson from 'react-json-view'
 
 import AddAppointment from './AddAppointment';
-import appointmentHelpers from '../../../helpers/helpers';
+import helpers from '../../../helpers/helpers';
 
 class AppointmentCard extends React.Component{
     constructor(props){
@@ -30,7 +31,7 @@ class AppointmentCard extends React.Component{
         })
     }
     render(){
-        const date = appointmentHelpers.date();
+        const date = helpers.date();
         let color = ''
         if(this.props.appointment.date < date){
             color = grey500
@@ -125,12 +126,13 @@ class AppointmentList extends React.Component{
             }
             const appointments = res.body.response;
             this.setState({appointments: appointments});
-            this.sortAppointments('appointments', this.state.appointments, 'date')
             this.updateAppointments();
         })
     }
     updateAppointments(){
-        const date = appointmentHelpers.date();
+        
+        this.sortAppointments('appointments', this.state.appointments, 'asc', ['date', 'time'])
+        const date = helpers.date();
         const currentAppointments = this.state.appointments.filter((apt) => {
             return apt.date === date
         });
@@ -141,25 +143,17 @@ class AppointmentList extends React.Component{
         const futureAppointments = this.state.appointments.filter((apt) => {
             return apt.date > date;
         })
-        this.setState({currentAppointments: currentAppointments}/*, this.sortAppointments('currentAppointments', this.state.currentAppointments, 'date', 'time')*/);
-        this.setState({futureAppointments: futureAppointments}/*, this.sortAppointments('futureAppointments', this.state.futureAppointments, 'date', 'time')*/);
-        this.setState({pastAppointments: pastAppointments}/*, this.sortAppointments('pastAppointments', this.state.pastAppointments, 'date', 'time')*/);
+        this.setState({currentAppointments: currentAppointments});
+        this.setState({futureAppointments: futureAppointments});
+        this.setState({pastAppointments: pastAppointments});
+        
+
     }
-    sortAppointments(name, arr, attr1, attr2){
-        console.log(arr)
-        const newArr = appointmentHelpers.mergeSort(arr, attr1, attr2);
+    sortAppointments(name, arr, type, options){
+        const newArr = helpers.mergeSort(arr, type, options);
         let updatedState = Object.assign({}, this.state)
         updatedState[name] = newArr;
-        console.log(updatedState)
-        this.setState({updatedState});
-    }
-    sortAppointments(name, arr, attr1){
-        console.log(arr)
-        const newArr = appointmentHelpers.mergeSort(arr, attr1);
-        let updatedState = Object.assign({}, this.state)
-        updatedState[name] = newArr;
-        console.log(updatedState)
-        this.setState({updatedState});
+        this.setState(updatedState);
     }
     addAppointment(apt){
         let updatedAppointments = Object.assign([], this.state.appointments);
@@ -198,6 +192,9 @@ class AppointmentList extends React.Component{
                             <h1 style={{fontWeight: 300}} onClick={this.sortAppointments}>Appointments Today</h1>
                             <div className="row">
                                 {this.state.currentAppointments.length === 0 ? <NoAppointments section="today"/> : CurrentAppointments}
+                            </div>
+                            <div className="row">
+                                <ReactJson src={this.state}/>
                             </div>
                         </div>
                         <div className="col s12 m6">

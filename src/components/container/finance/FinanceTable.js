@@ -6,6 +6,7 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
 import {red500, green500} from 'material-ui/styles/colors'
 
 import FinanceObject from './financeObj';
+import helpers from '../../../helpers/helpers'
 
 class Chart extends React.Component {
 	constructor(props){
@@ -36,22 +37,16 @@ class Chart extends React.Component {
 		if(this.state.financeJobs !== undefined){
 			const keys = Object.keys(this.state.financeJobs)
 			let data = new Array();
-			Object.size = function(obj) {
-				var size = 0, key;
-				for (key in obj) {
-					if (obj.hasOwnProperty(key)) size++;
-				}
-				return size;
-			};
-			const length = Object.size(this.state.financeJobs)
+			
+			const length = helpers.size(this.state.financeJobs)
 			for(let i = 0; i < length; i++){
 				const month = keys[i];
 				const index = parseInt(month, 10) - 1
 				const m = months[index]
-				const pushData = {
-				month: [m], 
-				expenses: this.calculateTotal(this.state.financeJobs[month], 'expenses'), 
-				quote_price: this.calculateTotal(this.state.financeJobs[month], 'quote_price')
+				const pushData = { 
+					month: [m], 
+					expenses: this.calculateTotal(this.state.financeJobs[month], 'expenses'), 
+					quote_price: this.calculateTotal(this.state.financeJobs[month], 'quote_price')
 				}
 				data.push(pushData)
 			}
