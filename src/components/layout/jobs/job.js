@@ -24,6 +24,7 @@ class Job extends React.Component{
 			job: new Array(),
 			notFound: false,
 			jobParts: new Array(),
+			newJobParts: new Array(),
 			parts: new Array(),
 			snackbarOpen: false,
 			snackbarMessage: ''
@@ -58,8 +59,7 @@ class Job extends React.Component{
 				alert('ERROR: ' + err)
 			}
 			const jobParts = res.body.response;
-			console.log(jobParts)
-			this.setState({jobParts: jobParts});
+			this.setState({jobParts: jobParts,  newJobParts: jobParts});
 		});
 
 		superagent.get(`/api/part`)
@@ -72,7 +72,6 @@ class Job extends React.Component{
 		});
 	}
 	statusChange(event, value){
-		console.log(value);
 		let updatedJob = Object.assign([], this.state.job);
 		if(value === 0){
 			updatedJob.status = 'Quote';
@@ -98,26 +97,53 @@ class Job extends React.Component{
 		}
 		jobPart.name = part.name;
 		jobPart.cost_per_unit = part.cost_per_unit
-		let updatedJobParts = Object.assign([], this.state.jobParts);
+		let updatedJobParts = Object.assign([], this.state.newJobParts);
 		let jpExists = false;
 		let totalCost = 0
 		for(let i = 0; i < updatedJobParts.length; i++){
 			if(updatedJobParts[i].idpart === jobPart.idpart){
 				jpExists = true
-				updatedJobParts[i].quantity = parseInt(updatedJobParts[i].quantity) + parseInt(jobPart.quantity)
-				const cost = part.cost_per_unit * jobPart.quantity;
-				totalCost = this.state.expenses + cost;
+				superagent.put(`/api/jobitem/${this.state.job.idjob}`)
+				.set('Content-Type', 'application/json')
+				.send({fieldName: `quantity`, quantity: (jobPart.quantity + updatedJobParts[i].quantity), idpart: jobPart.idpart})
+				.end((err, res) => {
+					if(err){
+						this.setState({snackbarMessage: "Couldn't update that job item! Try again"}, this.openSnackbar);
+					}else{
+						updatedJobParts[i].quantity = parseInt(updatedJobParts[i].quantity) + parseInt(jobPart.quantity)
+						const cost = part.cost_per_unit * jobPart.quantity;
+						totalCost = this.state.expenses + cost;
+						let updatedJob = Object.assign({}, this.state.job)
+						updatedJob.expenses = totalCost
+						this.setState({newJobParts: updatedJobParts, job: updatedJob}, console.log(this.state.newJobParts));
+					}
+				})				
 			}
 		}
 		if(!jpExists){
 			jobPart.quantity = parseInt(jobPart.quantity)
-			const cost = part.cost_per_unit * jobPart.quantity;
-			totalCost = this.state.expenses + cost;
-			updatedJobParts.push(jobPart);
+			const postPart = {
+				idjob: this.state.job.idjob,
+				idpart: jobPart.idpart,
+				quantity: jobPart.quantity
+			}
+			superagent.post('/api/jobitem')
+			.set('Content-Type', 'application/json')
+			.send(postPart)
+			.end((err, res) => {
+				if(err){
+					this.setState({snackbarMessage: "Couldn't add that part! Try again"}, this.openSnackbar)
+				}else{				
+					console.log(res)	
+					const cost = part.cost_per_unit * jobPart.quantity;
+					totalCost = this.state.expenses + cost;
+					updatedJobParts.push(jobPart);
+					let updatedJob = Object.assign({}, this.state.job)
+					updatedJob.expenses = totalCost
+					this.setState({newJobParts: updatedJobParts, job: updatedJob}, console.log(this.state.newJobParts));
+				}
+			})
 		}
-		let updatedJob = Object.assign({}, this.state.job)
-		updatedJob.expenses = totalCost
-		this.setState({jobParts: updatedJobParts, job: updatedJob});
 	}
 	deleteJobPart(jobPart){
 		const idpart = jobPart.idpart
@@ -132,10 +158,10 @@ class Job extends React.Component{
 				updatedJob.expenses = newCost;
 				updatedJob.quote_price = newCost * 1.5;
 
-				let updatedJobParts = this.state.jobParts.filter((jp) => {
+				let updatedJobParts = this.state.newJobParts.filter((jp) => {
 				return jp.idpart !== jobPart.idpart
 				})
-				this.setState({job: updatedJob, jobParts: updatedJobParts, snackbarMessage: 'Deleted successfully'}, this.openSnackbar);
+				this.setState({job: updatedJob, newJobParts: updatedJobParts, snackbarMessage: 'Deleted successfully'}, this.openSnackbar);
 			}			
 		})		
 	}
@@ -146,7 +172,6 @@ class Job extends React.Component{
 		this.setState({snackbarOpen: false});
 	}
 	handleToggle(event, isInputChecked){
-		console.log(isInputChecked)
 		let updatedJob = Object.assign({}, this.state.job);
 		const paid = isInputChecked ? 1 : 0 
 		updatedJob.paid = paid;
@@ -169,12 +194,10 @@ class Job extends React.Component{
 		.set('Content-Type', 'application/json')
 		.send(job)
 		.end((err, res) => {
-			console.log(job)
 			if(err){
 				alert('ERROR: ' + err)
 			}
 			if(res.body.status === 200){
-				console.log("succ")
 				this.setState({snackbarMessage: 'Changes saved successfully!'}, this.openSnackbar);
 			}
 		})
@@ -230,7 +253,7 @@ class Job extends React.Component{
 				<div className="container" style={{marginTop: 20}}>
 					<Grid>
 						<Row>
-							<Col xs={12} sm={12} md={8} lg={8} mdOffset={2} lgOffset={2}>
+							<Col xs={12} sm={12} md={10} lg={8} mdOffset={1} lgOffset={2}>
 								<Grid fluid>
 									<Row middle="xs">
 										<Col xs={12} sm={12} md={8} lg={10}>
@@ -300,7 +323,7 @@ class Job extends React.Component{
 												hintText="Quote Price" 
 												value={this.state.job.quote_price.toFixed(2)}
 												onChange={this.handleQuotePriceChange} />
-											<JobPartTable jobParts={this.state.jobParts} delete={this.deleteJobPart}/>
+											<JobPartTable jobParts={this.state.newJobParts} delete={this.deleteJobPart}/>
 											<AddJobPart add={this.addJobPart}/>
 										</Col>
 									</Row>

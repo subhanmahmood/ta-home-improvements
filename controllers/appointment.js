@@ -14,17 +14,52 @@ module.exports = {
     })
   },
   find: function(req, res){
-    if(typeof req.query['date'] === 'string'){
-      var query = 'SELECT * FROM tblappointment INNER JOIN tblcustomer on tblappointment.idcustomer = tblcustomer.idcustomer AND tblappointment.date = ?'
-      connection.query(query, req.query['date'], function(error, results, fields){
+    const keys = Object.keys(req.query)
+    var items = new Array()
+    if(keys.length > 0){
+      var queryStr = 'SELECT * FROM tblappointment '
+      if('customer' in req.query && keys.length === 1){
+        queryStr = queryStr + "INNER JOIN tblcustomer ON tblappointment.idcustomer = tblcustomer.idcustomer"
+      }else if('customer' in req.query && keys.length !== 1){
+        queryStr = queryStr + "INNER JOIN tblcustomer ON tblappointment.idcustomer = tblcustomer.idcustomer"
+        queryStr = queryStr + " AND "
+        for (var i=keys.length-1; i>=0; i--) {
+          if (keys[i] === 'customer') {
+              keys.splice(i, 1);
+          }
+        }
+        for(var i = 0; i < keys.length; i++){
+          var key = keys[i]
+          var item = req.query[key]
+          if(i === keys.length - 1){
+            queryStr = queryStr + key + " = ?"
+          }else{  
+            queryStr = queryStr + key + " = ? AND "
+          }
+          items.push(item)                     
+        }
+      }else{
+        queryStr = queryStr + " WHERE "
+        for(var i = 0; i < keys.length; i++){
+          var key = keys[i]
+          var item = req.query[key]
+          if(i === keys.length - 1){
+            queryStr = queryStr + key + " = ?"
+          }else{  
+            queryStr = queryStr + key + " = ? AND "
+          }
+          items.push(item)  
+        }         
+      }     
+      var query = connection.query(queryStr, items, function(error, results, fields){
         if ( error ) {
           res.send({ "status": 500, "error": error, "response": null })
         }else{
           res.send({ "status": 200, "error": null, "response": results });
         }
       })
-    } else if(typeof req.query['customer'] === 'string'){
-      var query = 'SELECT * FROM tblappointment INNER JOIN tblcustomer ON tblappointment.idcustomer = tblcustomer.idcustomer'
+    }else{
+      var query = 'SELECT * FROM tblappointment'
       connection.query(query, function(error, results, fields){
         if ( error ) {
           res.send({ "status": 500, "error": error, "response": null })
@@ -32,16 +67,7 @@ module.exports = {
           res.send({ "status": 200, "error": null, "response": results });
         }
       })
-    } else {
-      var query = 'SELECT * FROM tblappointment';
-      connection.query(query, function(error, results, fields){
-        if ( error ) {
-          res.send({ "status": 500, "error": error, "response": null })
-        }else{
-          res.send({ "status": 200, "error": null, "response": results });}
-      })
-    }
-    
+    }    
   },
   findById: function(req, res){
     var id = parseInt(req.params.id);

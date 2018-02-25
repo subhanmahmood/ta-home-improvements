@@ -93,22 +93,6 @@ OBJECTIVE
 8.2 - Display graphs detailing profit/loss and revenue month by month
 */
 
-class FinanceTableRow extends React.Component{
-	render(){
-		const paid = this.props.job.paid === 0 ? 'No' : 'Yes'
-		const color = this.props.job.paid === 0 ? red500 : green500
-		const expenses = this.props.job.expenses
-		return(
-			<TableRow>
-				<TableRowColumn>{this.props.job.idjob}</TableRowColumn>
-				<TableRowColumn>{this.props.job.date_added}</TableRowColumn>
-				<TableRowColumn>{expenses}</TableRowColumn>
-				<TableRowColumn>{this.props.job.quote_price.toFixed(2)}</TableRowColumn>
-				<TableRowColumn style={{color: color}}>{paid}</TableRowColumn>
-			</TableRow>
-		)
-	}
-}
 
 class FinanceTable extends React.Component{
 	constructor(props){

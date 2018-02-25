@@ -13,6 +13,7 @@ import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
+import {Table, TableHeader, TableHeaderColumn, TableBody, TableRow, TableRowColumn} from 'material-ui/Table';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 
 import { grey500, red500, green500, cyan500, deepOrange500, brown500, purple500 } from 'material-ui/styles/colors';
@@ -41,7 +42,9 @@ class JobsList extends React.Component {
 			valueJobStatus: 1
 		}
 		this.addJob = this.addJob.bind(this);
+		this.onCellClick = this.onCellClick.bind(this);
 		this.handleJobTypeChange = this.handleJobTypeChange.bind(this);
+		this.handleChange = this.handleChange.bind(this)
 		this.handleJobStatusChange = this.handleJobStatusChange.bind(this);
 	}	
 	componentDidMount(){
@@ -62,35 +65,33 @@ class JobsList extends React.Component {
 	    });
 	}
 	handleJobTypeChange(event, value, index){
-		const types = ['All', 'Conservatory', 'Doors/Windows', 'General'];
-		if(types[index - 1] === 'All'){
-			this.setState({jobList: this.state.jobs});
-		}else{
-			const jobList = this.state.jobs.filter((job) => {
-				return job.job_type === types[index - 1]
-			})
-			this.setState({jobList: jobList});
-		}
-	    this.setState({
-	      valueJobType: value + 1,
-	    });
+		this.setState({valueJobType: value + 1}, this.handleChange);
 	}
-	handleJobStatusChange(event, value, index){
+	handleJobStatusChange(event, value, index){		
+		this.setState({valueJobStatus: value + 1}, this.handleChange);
+	}
+	handleChange(){
+		const types = ['All', 'Conservatory', 'Doors/Windows', 'General'];
 		const status = ['All', 'Quote', 'Ongoing', 'Completed'];
-		
-		if(status[index - 1] === 'All'){
-			this.setState({jobList: this.state.jobs});
-		}else{
-			const jobList = this.state.jobList.filter((job) => {
-				console.log(job.status)
-				console.log(status[index - 1])
-				return job.status === status[index - 1]
-			})
-			this.setState({jobList: jobList});
+		let query = `/api/job?`
+		if(this.state.valueJobStatus === 1 && this.state.valueJobType !== 1){
+			query = query + 'job_type=' + types[this.state.valueJobType - 1] + "&"
+		}else if(this.state.valueJobStatus !== 1 && this.state.valueJobType === 1){
+			query = query + 'status=' + status[this.state.valueJobStatus - 1] + "&"
+		}else if(this.state.valueJobStatus !== 1 && this.state.valueJobType !== 1){
+			query = query + `status=${status[this.state.valueJobStatus - 1]}&job_type=${types[this.state.valueJobType - 1]}&`;
 		}
-	    this.setState({
-	      valueJobStatus: value + 1,
-	    });
+		query = query + 'customer=true'
+		console.log(query)
+		superagent.get(query)
+		.end((err, res) => {
+			if(err){
+				alert('ERROR: ' + err)
+			}else if(res.body.status === 200){
+				const jobs = res.body.response;
+				this.setState({jobs: jobs});
+			}
+		})
 	}
 	addJob(job){
 		let updatedJobs = Object.assign(this.state.jobs);
@@ -109,22 +110,59 @@ class JobsList extends React.Component {
 			}
 		})		
 	}	
-	calculateProfitJobType(array, n){
-		n |= 0;
-		if(n === array.length){
-			return 0;
-		} else {
-			return array[n].profit + this.calculateProfitJobType(array, n + 1);
-		}
+	onCellClick(rowNumber, columnId){
+		const job = this.state.jobs[rowNumber]
+		window.location = `/jobs/${job.idjob}`
 	}
 	render(){
 		const columnSize = 12 / this.state.value;
 		const columnClass = "card col s12 m" + columnSize;
-
+		const colWidth = {
+			id: {
+				width: 20
+			},
+			paid: {
+				width: 30
+			}
+		};
 		const JobCards = this.state.jobList.map((job, i) => {
 			return (<div className={columnClass} key={i} ><JobCard job={job} /></div>)
 		});
 		
+		const Rows = this.state.jobs.map((job, i) => {
+			let jobTypeColor = cyan500;
+			switch (job.job_type.toLowerCase()) {
+				case 'conservatory':
+					jobTypeColor = deepOrange500;
+					break;
+				case 'doors/windows':
+					jobTypeColor = brown500;
+					break;
+				case 'general':
+					jobTypeColor = purple500;
+					break;
+				default:
+					break;
+			}
+			let statusColor = grey500;
+			if(job.status.toLowerCase() === 'ongoing'){
+				statusColor = red500;
+			} else if (job.status.toLowerCase() === 'completed') {
+				statusColor = green500;
+			}
+			const paid = job.paid === 0 ? 'No' : 'Yes'
+			const color = job.paid === 0 ? red500 : green500
+			return(
+				<TableRow key={i}>
+					<TableRowColumn style={colWidth.id}>{job.idjob}</TableRowColumn>
+					<TableRowColumn style={{padding: 0}}><span className="highlight" style={{backgroundColor: jobTypeColor}}>{job.job_type}</span></TableRowColumn>
+					<TableRowColumn><span style={{color: statusColor}}>{job.status}</span></TableRowColumn>
+					<TableRowColumn>{job.first_name + " " + job.last_name}</TableRowColumn>
+					<TableRowColumn>£{job.quote_price.toFixed(2)}</TableRowColumn>
+					<TableRowColumn style={colWidth.paid}><span style={{color: color}}>{paid}</span></TableRowColumn>
+				</TableRow>
+			)
+		})
 		return(
 			<div>
 				<Toolbar style={{backgroundColor: '#fff', marginBottom: 20}}>
@@ -167,7 +205,33 @@ class JobsList extends React.Component {
 						</IconMenu>
 					</ToolbarGroup>
 				</Toolbar>
-				{JobCards}					
+				<Table
+					onCellClick={this.onCellClick}>
+					<TableHeader
+						displaySelectAll={false}
+						adjustForCheckbox={false}>
+						<TableRow>
+							<TableHeaderColumn style={colWidth.id}>ID</TableHeaderColumn>                            
+							<TableHeaderColumn>Job Type</TableHeaderColumn>
+							<TableHeaderColumn>Status</TableHeaderColumn>
+							<TableHeaderColumn>Customer</TableHeaderColumn>
+							<TableHeaderColumn>Quote Price</TableHeaderColumn>
+							<TableHeaderColumn style={colWidth.paid}>Paid</TableHeaderColumn>
+						</TableRow>
+					</TableHeader>
+					<TableBody
+						showRowHover={true}
+						displayRowCheckbox={false}>
+						{Rows}
+					</TableBody>
+				</Table>
+				{this.state.jobs.length === 0 ?
+					<div style={{width: '100%', color: grey500, textAlign: 'center'}}>
+						No Jobs Found
+					</div>
+					: 
+					''
+				}
 				<AddJobDialog addJob={this.addJob}/>			
 			</div>
 		)

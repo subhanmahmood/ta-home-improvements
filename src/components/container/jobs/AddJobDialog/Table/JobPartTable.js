@@ -10,16 +10,7 @@ class TableItem extends React.Component {
 		super(props);
 	}
 	render(){		
-		const totalPrice = this.props.jobPart.cost_per_unit * this.props.jobPart.quantity;
-		return(
-			<TableRow>
-				<TableRowColumn>{this.props.jobPart.idpart}</TableRowColumn>
-				<TableRowColumn>{this.props.jobPart.name}</TableRowColumn>
-				<TableRowColumn>{this.props.jobPart.quantity}</TableRowColumn>
-				<TableRowColumn>{`£${(totalPrice).toFixed(2)}`}</TableRowColumn>
-				<TableRowColumn><FlatButton label="delete" labelStyle={{color: red500}} onClick={() => this.props.delete(this.props.jobPart)}/></TableRowColumn>
-			</TableRow>
-		)
+		
 	}
 }
 
@@ -29,7 +20,16 @@ class JobPartTable extends React.Component {
 	}
 	render(){
 		const TableRows = this.props.jobParts.map((jobPart, i) => {				
-			return(<TableItem jobPart={jobPart} key={i} delete={this.props.delete} />)
+			const totalPrice = jobPart.cost_per_unit * jobPart.quantity;
+			return(
+				<TableRow key={i}>
+					<TableRowColumn>{jobPart.idpart}</TableRowColumn>
+					<TableRowColumn>{jobPart.name}</TableRowColumn>
+					<TableRowColumn>{jobPart.quantity}</TableRowColumn>
+					<TableRowColumn>{`£${(totalPrice).toFixed(2)}`}</TableRowColumn>
+					<TableRowColumn><FlatButton label="delete" labelStyle={{color: red500}} onClick={() => this.props.delete(jobPart)}/></TableRowColumn>
+				</TableRow>
+			)
 		})
 		return(
 			<Table>

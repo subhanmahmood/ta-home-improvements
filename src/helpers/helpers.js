@@ -46,14 +46,14 @@ const helpers = {
 			let indexRight = 0
 						
 			while (indexLeft < left.length && indexRight < right.length) {
-				let leftItem1 = ''
-				let rightItem1 = ''
+				let leftString = ''
+				let rightString = ''
 				options.forEach(option => {
-					leftItem1 = leftItem1 + left[indexLeft][option] + " "
-					rightItem1 = rightItem1 + right[indexRight][option] + " "
+					leftString = leftString + left[indexLeft][option] + " "
+					rightString = rightString + right[indexRight][option] + " "
 				});
 				if(type === 'asc'){
-					if (leftItem1 < rightItem1) {
+					if (leftString < rightString) {
 						result.push(left[indexLeft])
 						indexLeft++
 					} else {
@@ -61,7 +61,7 @@ const helpers = {
 						indexRight++
 					}
 				}else if(type === 'desc'){
-					if (leftItem1 > rightItem1) {
+					if (leftString > rightString) {
 						result.push(left[indexLeft])
 						indexLeft++
 					} else {

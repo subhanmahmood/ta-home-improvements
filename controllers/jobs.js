@@ -13,27 +13,53 @@ module.exports = {
       }
     })
   },
-  find: function(req, res){
-    if(typeof req.query['type'] === 'string'){
-      var query = 'SELECT * FROM tbljob INNER JOIN tblcustomer ON tbljob.idcustomer = tblcustomer.idcustomer AND tbljob.job_type = ?';
-      connection.query(query, req.query['type'], function(error, results, fields){
+  find: function(req, res){    
+    const keys = Object.keys(req.query)
+    var items = new Array()
+    if(keys.length > 0){
+      var queryStr = 'SELECT * FROM tbljob '
+      if('customer' in req.query && keys.length === 1){
+        queryStr = queryStr + "INNER JOIN tblcustomer ON tbljob.idcustomer = tblcustomer.idcustomer"
+      }else if('customer' in req.query && keys.length !== 1){
+        queryStr = queryStr + "INNER JOIN tblcustomer ON tbljob.idcustomer = tblcustomer.idcustomer"
+        queryStr = queryStr + " AND "
+        for (var i=keys.length-1; i>=0; i--) {
+          if (keys[i] === 'customer') {
+              keys.splice(i, 1);
+          }
+        }
+        for(var i = 0; i < keys.length; i++){
+          var key = keys[i]
+          var item = req.query[key]
+          if(i === keys.length - 1){
+            queryStr = queryStr + key + " = ?"
+          }else{  
+            queryStr = queryStr + key + " = ? AND "
+          }
+          items.push(item)                     
+        }
+      }else{
+        queryStr = queryStr + " WHERE "
+        for(var i = 0; i < keys.length; i++){
+          var key = keys[i]
+          var item = req.query[key]
+          if(i === keys.length - 1){
+            queryStr = queryStr + key + " = ?"
+          }else{  
+            queryStr = queryStr + key + " = ? AND "
+          }
+          items.push(item)  
+        }         
+      }     
+      var query = connection.query(queryStr, items, function(error, results, fields){
         if ( error ) {
           res.send({ "status": 500, "error": error, "response": null })
         }else{
           res.send({ "status": 200, "error": null, "response": results });
         }
       })
-    }else if(typeof req.query['status'] === 'string'){
-      var query = 'SELECT * FROM tbljob INNER JOIN tblcustomer ON tbljob.idcustomer = tblcustomer.idcustomer AND tbljob.status = ?';
-      connection.query(query, req.query['status'], function(error, results, fields){
-        if ( error ) {
-          res.send({ "status": 500, "error": error, "response": null })
-        }else{
-          res.send({ "status": 200, "error": null, "response": results });
-        }
-      })
-    }else if(typeof req.query['customer'] === 'string'){                
-      var query = 'SELECT * FROM tbljob INNER JOIN tblcustomer ON tbljob.idcustomer = tblcustomer.idcustomer';
+    }else{
+      var query = 'SELECT * FROM tbljob'
       connection.query(query, function(error, results, fields){
         if ( error ) {
           res.send({ "status": 500, "error": error, "response": null })
@@ -41,16 +67,7 @@ module.exports = {
           res.send({ "status": 200, "error": null, "response": results });
         }
       })
-    }else{                
-      var query = 'SELECT * FROM tbljob';
-      connection.query(query, function(error, results, fields){
-        if ( error ) {
-          res.send({ "status": 500, "error": error, "response": null })
-        }else{
-          res.send({ "status": 200, "error": null, "response": results });
-        }
-      })
-    }    
+    }
   },
   findById: function(req, res){
     var id = parseInt(req.params.id);

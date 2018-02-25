@@ -6,10 +6,10 @@ import {cyan500, grey500, grey300} from 'material-ui/styles/colors';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import radio from 'material-ui/svg-icons/av/radio';
-import ReactJson from 'react-json-view'
 
 import AddAppointment from './AddAppointment';
 import helpers from '../../../helpers/helpers';
+import { Grid, Row, Col } from 'react-flexbox-grid';
 
 class AppointmentCard extends React.Component{
     constructor(props){
@@ -91,7 +91,7 @@ and job details.
 class NoAppointments extends React.Component {
     render(){
         return(
-            <div style={{textAlign: 'center'}}>
+            <div style={{textAlign: 'center', width: '100%'}}>
                 <h3 style={{color: grey300, fontWeight: 200}}>No appointments&nbsp;{this.props.section}</h3>
             </div>
         )
@@ -101,9 +101,7 @@ class NoAppointments extends React.Component {
 class AppointmentList extends React.Component{
     constructor(props){
         super(props)
-        this.state = {            
-            open: false,
-            value: 1,
+        this.state = {   
             appointments: new Array(),
             currentAppointments: new Array(),
             pastAppointments: new Array(),
@@ -129,8 +127,7 @@ class AppointmentList extends React.Component{
             this.updateAppointments();
         })
     }
-    updateAppointments(){
-        
+    updateAppointments(){        
         this.sortAppointments('appointments', this.state.appointments, 'asc', ['date', 'time'])
         const date = helpers.date();
         const currentAppointments = this.state.appointments.filter((apt) => {
@@ -187,29 +184,26 @@ class AppointmentList extends React.Component{
         return(
             <div>
                 <div className="container">
-                    <div className="row">
-                        <div className="col s12 m6">
-                            <h1 style={{fontWeight: 300}} onClick={this.sortAppointments}>Appointments Today</h1>
-                            <div className="row">
-                                {this.state.currentAppointments.length === 0 ? <NoAppointments section="today"/> : CurrentAppointments}
-                            </div>
-                            <div className="row">
-                                <ReactJson src={this.state}/>
-                            </div>
-                        </div>
-                        <div className="col s12 m6">
-                            <h1 style={{fontWeight: 300}} onClick={this.sortAppointments}>Appointments Coming up</h1>
-                            <div className="row">
-                                {this.state.futureAppointments.length === 0 ? <NoAppointments section="coming up"/> : FutureAppointments}
-                            </div>
-                            <div className="row">
-                                <div className="col s12">
-                                    <h1 style={{fontWeight: 300}}>Past Appointments</h1>
-                                    {this.state.pastAppointments.length === 0 ? <NoAppointments section="yet"/> : PastAppointments}
-                                </div>                                
-                            </div>
-                        </div>
-                    </div>
+                    <Grid>
+                        <Row>
+                            <Col xs={12} sm={12} md={6} lg={4}>
+                                <h1 style={{fontWeight: 300}}>Appointments Today</h1>
+                                <div className="row">
+                                    {this.state.currentAppointments.length === 0 ? <NoAppointments section="today"/> : CurrentAppointments}
+                                </div>
+                            </Col>
+                            <Col xs={12} sm={12} md={6} lg={4}>
+                                <h1 style={{fontWeight: 300}}>Appointments Coming up</h1>
+                                <div className="row">
+                                    {this.state.futureAppointments.length === 0 ? <NoAppointments section="coming up"/> : FutureAppointments}
+                                </div>
+                            </Col>
+                            <Col xs={12} sm={12} md={6} lg={4}>
+                                <h1 style={{fontWeight: 300}}>Past Appointments</h1>
+                                {this.state.pastAppointments.length === 0 ? <NoAppointments section="yet"/> : PastAppointments}
+                            </Col>
+                        </Row>
+                    </Grid>
                 </div>
                 <AddAppointment addAppointment={this.addAppointment} success={this.getAppointments}/>
             </div>

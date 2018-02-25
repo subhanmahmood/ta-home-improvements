@@ -36,7 +36,6 @@ class Dashboard extends React.Component {
 		this.calculateTotal = this.calculateTotal.bind(this);
 	}
 	calculateTotal(array, prop, n){
-		console.log(array)
 		n |= 0;
 		if(n === array.length){
 			return 0;
@@ -47,7 +46,7 @@ class Dashboard extends React.Component {
 	componentDidMount(){		
 		const date = helpers.date();
 
-		superagent.get('/api/job?status=Ongoing')
+		superagent.get('/api/job?status=Ongoing&customer')
 		.end((err, res) => {
 			if(err){
 				alert('ERROR: ' + err)

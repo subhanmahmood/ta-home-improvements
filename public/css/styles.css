@@ -33,6 +33,20 @@ html {
   border-top-right-radius: 5px;
 }
 
+.higlhight-sm {
+  color: #fff;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 2px;
+  padding-bottom: 2,;
+  display: inline-block; 
+  font-weight: 500;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
 @media only screen and (max-width: 600px) {
   .hide-on-small-only, .hide-on-small-and-down {
     display: none !important;

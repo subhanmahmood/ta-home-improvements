@@ -46,16 +46,22 @@ module.exports = {
     })
   },
   findAndUpdateById: function(req, res){
-    var id = req.params.id;
-    var body = req.body;
-    var query = 'UPDATE tbljobitem SET ? WHERE idjob = ? AND idpart = ?';
-    connection.query(query, [body, id, body['idpart']], function(error, results, fields) {
-      if ( error ) {
+    var body = req.body  
+    var fieldName = body.fieldName.toString()
+    var newValue = body[fieldName]
+    var idjob = parseInt(req.params.id)
+    var idpart = body.idpart
+    console.log([newValue, idjob, idpart])
+    var query = 'UPDATE tbljobitem SET ' + fieldName + ' = ? WHERE idjob = ? AND idpart = ?';
+    connection.query(query, [newValue, idjob, idpart], function(error, results, fields){
+      
+      if(error){
         res.send({ "status": 500, "error": error, "response": null })
       }else{
-        res.send({ "status": 500, "error": null, "response": results})
+        res.send({ "status": 200, "error": null, "response": results });
       }
-    });
+    })
+
   },
   deleteAll: function(req, res){
     var query = 'DELETE FROM tbljobitem';
